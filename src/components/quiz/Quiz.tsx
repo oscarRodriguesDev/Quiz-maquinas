@@ -4,13 +4,15 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { QuestionCard } from "./QuestionCard";
 import { Progress } from "./Progress";
 import type { Family } from "@/types/catalog";
-import type { QuestionId } from "@/lib/quiz/questions";
+import type { Question, QuestionId } from "@/lib/quiz/questions";
 import {
   buildFlow,
   clearsOnChange,
   questionById,
 } from "@/lib/quiz/flow";
 import { validateAnswers } from "@/lib/quiz/schema";
+
+const GOAL_QUESTION_ID: QuestionId = "goal";
 
 const validFamilies: Family[] = [
   "pressure",
@@ -37,6 +39,8 @@ export default function Quiz() {
     return validFamilies.includes(g as Family) ? (g as Family) : null;
   }, [answers.goal]);
 
+  // Quando a família ainda não foi escolhida, o quiz começa com Q1 (goal).
+  // A partir daí, buildFlow monta o restante do caminho por família.
   const flow = useMemo(() => {
     if (!family) return null;
     return buildFlow(family, answers);
@@ -45,10 +49,14 @@ export default function Quiz() {
   const maxIndex = flow ? flow.steps.length - 1 : 0;
   const displayIndex = Math.min(stepIndex, maxIndex);
 
-  const currentQuestion = useMemo(() => {
-    if (!flow) return null;
+  const currentQuestion: Question | undefined = useMemo(() => {
+    if (!family) {
+      // Família ainda não definida: mostrar apenas Q1 (objetivo).
+      return questionById(GOAL_QUESTION_ID);
+    }
+    if (!flow) return undefined;
     return questionById(flow.steps[displayIndex].questionId as QuestionId);
-  }, [flow, displayIndex]);
+  }, [family, flow, displayIndex]);
 
   const goToStep = useCallback(
     (index: number) => {
@@ -113,6 +121,20 @@ export default function Quiz() {
 
       setAnswers(nextAnswers);
 
+      // Se a família acabou de ser escolhida (Q1), o fluxo agora existe.
+      if (!family && value) {
+        const nextFlow = buildFlow(value as Family, nextAnswers);
+        const unanswered = nextFlow.steps.find(
+          (s) => !(s.questionId in nextAnswers),
+        );
+        if (unanswered) {
+          goToStep(nextFlow.steps.indexOf(unanswered));
+        } else {
+          submitQuiz();
+        }
+        return;
+      }
+
       const nextFlow = buildFlow(family as Family, nextAnswers);
       const unanswered = nextFlow.steps.find(
         (s) => !(s.questionId in nextAnswers),
@@ -135,16 +157,19 @@ export default function Quiz() {
   }, []);
 
   const progress = useMemo(() => {
+    if (!family) return { current: 1, total: 1, answered: 0 };
     if (!flow) return { current: 0, total: 0, answered: 0 };
     const answered = flow.steps.filter((s) => s.questionId in answers).length;
     return { current: displayIndex + 1, total: flow.steps.length, answered };
-  }, [flow, displayIndex, answers]);
+  }, [family, flow, displayIndex, answers]);
 
   if (stage === "result") {
-    return <ResultScreen answers={answers} result={result} onRestart={restartQuiz} />;
+    return (
+      <ResultScreen answers={answers} result={result} onRestart={restartQuiz} />
+    );
   }
 
-  if (!flow || !currentQuestion) {
+  if (!currentQuestion) {
     return (
       <section className="flex flex-1 w-full flex-col items-center justify-center bg-white p-6">
         <p className="text-brand-ink">Preparando o quiz…</p>
