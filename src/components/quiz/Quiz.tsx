@@ -10,6 +10,10 @@ import {
   clearsOnChange,
   questionById,
 } from "@/lib/quiz/flow";
+import {
+  getSurfaceOptions,
+  getWorkloadOptions,
+} from "@/lib/quiz/questions";
 import { validateAnswers } from "@/lib/quiz/schema";
 
 const GOAL_QUESTION_ID: QuestionId = "goal";
@@ -49,7 +53,7 @@ export default function Quiz() {
   const maxIndex = flow ? flow.steps.length - 1 : 0;
   const displayIndex = Math.min(stepIndex, maxIndex);
 
-  const currentQuestion: Question | undefined = useMemo(() => {
+  const baseQuestion: Question | undefined = useMemo(() => {
     if (!family) {
       // Família ainda não definida: mostrar apenas Q1 (objetivo).
       return questionById(GOAL_QUESTION_ID);
@@ -57,6 +61,19 @@ export default function Quiz() {
     if (!flow) return undefined;
     return questionById(flow.steps[displayIndex].questionId as QuestionId);
   }, [family, flow, displayIndex]);
+
+  // Q4 (surface) e Q5 (workload) exibem opções específicas por família.
+  const currentQuestion: Question | undefined = useMemo(() => {
+    if (!baseQuestion) return undefined;
+    if (!family) return baseQuestion;
+    if (baseQuestion.id === "surface") {
+      return { ...baseQuestion, options: getSurfaceOptions(family) };
+    }
+    if (baseQuestion.id === "workload") {
+      return { ...baseQuestion, options: getWorkloadOptions(family) };
+    }
+    return baseQuestion;
+  }, [baseQuestion, family]);
 
   const goToStep = useCallback(
     (index: number) => {
