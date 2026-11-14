@@ -1,6 +1,5 @@
 import type {
   CommercialState,
-  Family,
   Machine,
   QuizAnswers,
   Variant,

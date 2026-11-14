@@ -1,43 +1,27 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { QuestionCard } from "./QuestionCard";
 import { Progress } from "./Progress";
-import type { Question } from "@/lib/quiz/questions";
+import type { Family } from "@/types/catalog";
+import type { QuestionId } from "@/lib/quiz/questions";
 import {
   buildFlow,
   clearsOnChange,
   questionById,
 } from "@/lib/quiz/flow";
 import { validateAnswers } from "@/lib/quiz/schema";
-import type { Family } from "@/types/catalog";
 
-const BUDGET_LABELS: Record<string, string> = {
-  "500": "Até R$ 500",
-  "1000": "Até R$ 1.000",
-  "2000": "Até R$ 2.000",
-  "3500": "Até R$ 3.500",
-  "6000": "Até R$ 6.000",
-  "15000": "Até R$ 15.000",
-  open: "Sem limite definido / prefiro orçamento",
-};
-
-const GOAL_LABELS: Record<Family, string> = {
-  pressure: "Lavar veículos, calçadas ou áreas externas com jato de água",
-  extraction: "Lavar sofás, colchões, carpetes ou estofados com extração",
-  vacuum: "Aspirar sujeira em casa, na empresa ou na oficina",
-  steam: "Limpar superfícies com vapor",
-  floor: "Esfregar e limpar pisos com máquina",
-  sweep: "Recolher folhas, poeira e resíduos soltos do chão",
-  drain: "Retirar água acumulada com uma bomba",
-  pet: "Aspirar pelos durante os cuidados com o pet",
-};
-
-function answerLabel(question: Question | undefined, value: string): string {
-  if (!question) return value;
-  const option = question.options.find((o) => o.id === value);
-  return option ? option.label : value;
-}
+const validFamilies: Family[] = [
+  "pressure",
+  "extraction",
+  "vacuum",
+  "steam",
+  "floor",
+  "sweep",
+  "drain",
+  "pet",
+];
 
 export default function Quiz() {
   const [stage, setStage] = useState<"questions" | "result">("questions");
@@ -50,17 +34,7 @@ export default function Quiz() {
 
   const family = useMemo<Family | null>(() => {
     const g = answers.goal;
-    const valid: Family[] = [
-      "pressure",
-      "extraction",
-      "vacuum",
-      "steam",
-      "floor",
-      "sweep",
-      "drain",
-      "pet",
-    ];
-    return valid.includes(g as Family) ? (g as Family) : null;
+    return validFamilies.includes(g as Family) ? (g as Family) : null;
   }, [answers.goal]);
 
   const flow = useMemo(() => {
@@ -68,19 +42,13 @@ export default function Quiz() {
     return buildFlow(family, answers);
   }, [family, answers]);
 
+  const maxIndex = flow ? flow.steps.length - 1 : 0;
+  const displayIndex = Math.min(stepIndex, maxIndex);
+
   const currentQuestion = useMemo(() => {
     if (!flow) return null;
-    if (stepIndex < 0 || stepIndex >= flow.steps.length) return null;
-    return questionById(flow.steps[stepIndex].questionId);
-  }, [flow, stepIndex]);
-
-  // Reajusta o índice quando o fluxo encolhe (ex.: resposta alterada removeu perguntas).
-  useEffect(() => {
-    if (!flow) return;
-    if (stepIndex >= flow.steps.length) {
-      setStepIndex(flow.steps.length - 1);
-    }
-  }, [flow, stepIndex]);
+    return questionById(flow.steps[displayIndex].questionId as QuestionId);
+  }, [flow, displayIndex]);
 
   const goToStep = useCallback(
     (index: number) => {
@@ -93,35 +61,7 @@ export default function Quiz() {
     [flow],
   );
 
-  const selectAnswer = useCallback(
-    (value: string) => {
-      if (!currentQuestion) return;
-      setError(null);
-
-      const nextAnswers = { ...answers, [currentQuestion.id]: value };
-
-      // Limpar respostas dependentes incompatíveis (ex.: mudar Q1 limpa Q4/Q5/Q7 e verificações).
-      const clears = clearsOnChange(currentQuestion.id);
-      for (const clearId of clears) {
-        delete nextAnswers[clearId];
-      }
-
-      setAnswers(nextAnswers);
-
-      const nextFlow = buildFlow(family as Family, nextAnswers);
-      const unanswered = nextFlow.steps.find(
-        (s) => !(s.questionId in nextAnswers),
-      );
-      if (unanswered) {
-        goToStep(nextFlow.steps.indexOf(unanswered));
-      } else {
-        submitQuiz();
-      }
-    },
-    [answers, currentQuestion, family, goToStep],
-  );
-
-  const submitQuiz = async () => {
+  const submitQuiz = useCallback(async () => {
     setSubmitting(true);
     setError(null);
     try {
@@ -157,20 +97,48 @@ export default function Quiz() {
     } finally {
       setSubmitting(false);
     }
-  };
+  }, [answers]);
+
+  const selectAnswer = useCallback(
+    (value: string) => {
+      if (!currentQuestion) return;
+      setError(null);
+
+      const nextAnswers = { ...answers, [currentQuestion.id]: value };
+
+      const clears = clearsOnChange(currentQuestion.id as QuestionId);
+      for (const clearId of clears) {
+        delete nextAnswers[clearId];
+      }
+
+      setAnswers(nextAnswers);
+
+      const nextFlow = buildFlow(family as Family, nextAnswers);
+      const unanswered = nextFlow.steps.find(
+        (s) => !(s.questionId in nextAnswers),
+      );
+      if (unanswered) {
+        goToStep(nextFlow.steps.indexOf(unanswered));
+      } else {
+        submitQuiz();
+      }
+    },
+    [answers, currentQuestion, family, goToStep, submitQuiz],
+  );
 
   const restartQuiz = useCallback(() => {
     setAnswers({});
     setStepIndex(0);
     setStage("questions");
     setError(null);
+    setResult(null);
   }, []);
 
   const progress = useMemo(() => {
     if (!flow) return { current: 0, total: 0, answered: 0 };
     const answered = flow.steps.filter((s) => s.questionId in answers).length;
-    return { current: stepIndex + 1, total: flow.steps.length, answered };
-  }, [flow, stepIndex, answers]);
+    return { current: displayIndex + 1, total: flow.steps.length, answered };
+  }, [flow, displayIndex, answers]);
 
   if (stage === "result") {
     return <ResultScreen answers={answers} result={result} onRestart={restartQuiz} />;
@@ -192,24 +160,20 @@ export default function Quiz() {
             {error}
           </div>
         )}
-        <Progress
-          current={progress.current}
-          total={progress.total}
-          answered={progress.answered}
-        />
+        <Progress total={progress.total} answered={progress.answered} />
         <QuestionCard
-          key={`${currentQuestion.id}-${stepIndex}`}
+          key={`${currentQuestion.id}-${displayIndex}`}
           question={currentQuestion}
           step={progress.current}
           total={progress.total}
           value={answers[currentQuestion.id]}
           onSelect={selectAnswer}
           onBack={() => {
-            if (stepIndex > 0) {
-              goToStep(stepIndex - 1);
+            if (displayIndex > 0) {
+              goToStep(displayIndex - 1);
             }
           }}
-          canBack={stepIndex > 0}
+          canBack={displayIndex > 0}
           disabled={submitting}
         />
       </div>

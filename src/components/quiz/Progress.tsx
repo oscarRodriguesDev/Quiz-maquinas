@@ -1,10 +1,9 @@
 interface ProgressProps {
-  current: number;
   total: number;
   answered: number;
 }
 
-export function Progress({ current, total, answered }: ProgressProps) {
+export function Progress({ total, answered }: ProgressProps) {
   const share = total > 0 ? Math.round((answered / total) * 100) : 0;
 
   return (

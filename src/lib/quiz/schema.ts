@@ -24,6 +24,9 @@ export const FREQUENCIES: ("occasional" | "weekly" | "daily" | "extended")[] = [
   "extended",
 ];
 
+type ContextValue = (typeof CONTEXTS)[number];
+type FrequencyValue = (typeof FREQUENCIES)[number];
+
 export const POWER_MODES: string[] = [
   "127-single",
   "220-single",
@@ -78,12 +81,18 @@ export function validateAnswers(raw: unknown): ValidationResult {
   }
 
   const context = obj.context;
-  if (!CONTEXTS.includes(context as any)) {
+  if (
+    typeof context !== "string" ||
+    !CONTEXTS.includes(context as ContextValue)
+  ) {
     errors.push({ path: "context", message: "Contexto inválido." });
   }
 
   const frequency = obj.frequency;
-  if (!FREQUENCIES.includes(frequency as any)) {
+  if (
+    typeof frequency !== "string" ||
+    !FREQUENCIES.includes(frequency as FrequencyValue)
+  ) {
     errors.push({ path: "frequency", message: "Frequência inválida." });
   }
 
@@ -99,14 +108,17 @@ export function validateAnswers(raw: unknown): ValidationResult {
     errors.push({ path: "power", message: "Alimentação inválida." });
   }
 
-  if (!PRIORITIES.includes(obj.priority as string)) {
+  if (typeof obj.priority !== "string" || !PRIORITIES.includes(obj.priority)) {
     errors.push({ path: "priority", message: "Prioridade inválida." });
   }
 
   let budget: number | "open" = "open";
   if (obj.budget === "open") {
     budget = "open";
-  } else if (typeof obj.budget === "string" && BUDGET_IDS[obj.budget] !== undefined) {
+  } else if (
+    typeof obj.budget === "string" &&
+    BUDGET_IDS[obj.budget as keyof typeof BUDGET_IDS] !== undefined
+  ) {
     budget = BUDGET_IDS[obj.budget];
   } else if (typeof obj.budget === "number") {
     budget = obj.budget;
@@ -128,8 +140,8 @@ export function validateAnswers(raw: unknown): ValidationResult {
     errors: [],
     answers: {
       goal: goal as Family,
-      context: context as any,
-      frequency: frequency as any,
+      context: context as ContextValue,
+      frequency: frequency as FrequencyValue,
       surface: obj.surface as string,
       workload: obj.workload as string,
       power: obj.power as string,
@@ -140,6 +152,6 @@ export function validateAnswers(raw: unknown): ValidationResult {
   };
 }
 
-export function requiredQuestionIds(family: Family): QuestionId[] {
+export function requiredQuestionIds(): QuestionId[] {
   return ["goal", "context", "frequency", "surface", "workload", "power", "priority", "budget"];
 }

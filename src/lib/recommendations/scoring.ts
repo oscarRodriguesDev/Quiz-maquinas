@@ -15,10 +15,6 @@ export interface ScoreBreakdown {
   total: number;
 }
 
-function evidenceApproved<T>(ev: { value: T | null; state: string } | undefined): boolean {
-  return !!ev && ev.state === "approved" && ev.value !== null && ev.value !== undefined;
-}
-
 function tagMatches(evidence: { value: string[] | null; state: string } | undefined, tag: string): boolean {
   return !!evidence && evidence.state === "approved" && !!evidence.value && evidence.value.includes(tag);
 }
