@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-brand-ink: #161922;
+  --color-brand-yellow: #FFED00;
+  --color-accent: #238C96;
+  --color-surface: #FFFFFF;
+  --color-surface-muted: #F0F1F3;
+  --color-border: #D5D8DD;
+  --color-border-soft: #E8EAED;
+  --color-text-muted: #555555;
+  --color-text-secondary: #626262;
+}
+
+@layer base {
+  :root {
+    --brand-yellow: #FFED00;
+    --brand-ink: #161922;
+    --surface: #FFFFFF;
+    --surface-muted: #F0F1F3;
+    --border: #D5D8DD;
+    --border-soft: #E8EAED;
+    --text-muted: #555555;
+    --text-secondary: #626262;
+    --accent: #238C96;
+
+    --background: var(--surface);
+    --foreground: var(--brand-ink);
+    --font-clan: "Clan Pro", "Century Gothic", "Futura", "Segoe UI", Arial, sans-serif;
+    --font-sans: var(--font-clan);
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
