@@ -8,13 +8,16 @@ Lint: todos os arquivos novos/alterados limpos. Restante 1 erro em `src/types/ro
 ## Commits na branch vibecode
 - ef7405e — Início do quiz: home, fluxo de perguntas, motor de regras, endpoint /api/recommendations, arquivos de controle.
 - 319ef03 — Correções de lint e tipos após revisão do build.
+- 33599fd — Registra pedido inicial com ID do commit (pedidos.md).
+- c6ae344 — Correção: quiz inicia com Q1 (objetivo) em vez de travar em carregando.
 
 ## O que foi entregue nesta sessão
 - Home do quiz com identidade visual (amarelo #FFED00, tinta #161922, fonte Clan Pro + fallback).
-- Tela do quiz: uma pergunta por tela, cartões de opção (fieldset/legend + rádio real), Continuar/Voltar, progresso pelo caminho vigente, limpeza de respostas dependentes ao trocar resposta, sem avanço automático.
+- Tela do quiz: uma pergunta por tela, cartões com rádio real (fieldset/legend), Continuar/Voltar, progresso pelo caminho vigente, limpeza de respostas dependentes ao trocar resposta, sem avanço automático.
+- Início do fluxo: Q1 (objetivo) define a família e desbloqueia o restante do caminho (antes travava em "Preparando o quiz…" eternamente).
 - Lib de perguntas Q1–Q10 por família (especificação seção 5) e fluxo com limite de 10 perguntas efetivas.
 - Validação de respostas (`src/lib/quiz/schema.ts`).
-- Motor de regras puro no servidor: filtros obrigatórios (seção 6.1), pontuação de preferências (seção 6.3, apenas evidência aprovada, sem inferência por nome de modelo), desempate, motivos com códigos estáveis (seção 6.3).
+- Motor de regras puro no servidor: filtros obrigatórios (seção 6.1), pontuação de preferências apenas com evidência aprovada (seção 6.3, sem inferência por nome de modelo), desempate, motivos com códigos estáveis (seção 6.3).
 - Endpoint `POST /api/recommendations` com contrato de estados (200 / 400 / 409 / 503), leitura de catálogo server-side em `data/catalog.internal.json` (503 se ausente).
 - Tipos de domínio (`src/types/catalog.ts`) conforme seção 8.3.
 - Arquivos de controle: `memorias.md`, `checkpoints.md`, `pedidos.md`.
