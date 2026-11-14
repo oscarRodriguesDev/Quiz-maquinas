@@ -25,8 +25,13 @@ Repositório Next.js 16 (App Router, TypeScript, Tailwind v4) vazio do create-ne
 - `src/types/validator.ts` (gerado pelo Next): removido, referenciava a pasta `app/` raiz deletada; será regenerado no build.
 - Template default da Next substituído pela home do quiz.
 
+### Importação do CSV (concluída nesta sessão)
+- `scripts/import-catalog.ts`: leitura Windows-1252 (com detecção de BOM UTF-8), parser CSV com aspas/campos multilinha (sem `split(';')`), validação de headers obrigatórios, exclusões do anexo B e regras especiais, classificação por família, geração de `data/catalog.internal.json` + relatórios de excluídos/pendências.
+- `data/catalog.internal.json`: 121 máquinas importadas, todas com `quizStatus: "pending"` (requerem aprovação comercial/técnica antes de recomendação — nada aprovado automaticamente, requisito 8.4).
+- `catalogo.csv` não é commitado (ignorado via `.gitignore`, requisito 9: fonte privada/fora do repositório público).
+- `src/types/catalog.ts`: adicionado campo `brand` ao `Machine`.
+
 ### Pendências / decisões futuras
-- Importar e classificar o CSV real (`produtos_1276888_*.csv`) em `data/catalog.internal.json` via script de importação (seção 8.4) — CSV não está no repositório.
-- Aprovar seleção inicial de máquinas com evidência suficiente antes do lançamento.
+- Aprovar seleção inicial de máquinas com evidência suficiente antes do lançamento (decisão comercial/técnica — não fazer automaticamente).
 - Testes automatizados (parser, elegibilidade, preço, jornada) — nenhum runner de teste configurado ainda.
 - Deploy em Vercel e link na loja Tray apenas após validação comercial/técnica.

@@ -2,28 +2,26 @@
 Autoria: VIBECODE
 
 ## Estado
-Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/api/recommendations` (dinâmica). TypeScript sem erros no build.
-Lint: todos os arquivos novos/alterados limpos. Restante 1 erro em `src/types/routes.d.ts` (arquivo gerado pelo Next.js, pré-existente à sessão — não editado manualmente).
+Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/api/recommendations` (dinâmica). TypeScript sem erros no build. Lint limpo nos arquivos novos/alterados (exceto 1 erro pré-existente em `src/types/routes.d.ts`, gerado pelo Next.js).
 
 ## Commits na branch vibecode
 - ef7405e — Início do quiz: home, fluxo de perguntas, motor de regras, endpoint /api/recommendations, arquivos de controle.
 - 319ef03 — Correções de lint e tipos após revisão do build.
 - 33599fd — Registra pedido inicial com ID do commit (pedidos.md).
 - c6ae344 — Correção: quiz inicia com Q1 (objetivo) em vez de travar em carregando.
+- e1aeec4 — Atualiza arquivos de controle após correção do travamento do quiz.
+- aa6f6a7 — Importa catálogo CSV e gera catálogo interno.
 
-## O que foi entregue nesta sessão
-- Home do quiz com identidade visual (amarelo #FFED00, tinta #161922, fonte Clan Pro + fallback).
-- Tela do quiz: uma pergunta por tela, cartões com rádio real (fieldset/legend), Continuar/Voltar, progresso pelo caminho vigente, limpeza de respostas dependentes ao trocar resposta, sem avanço automático.
-- Início do fluxo: Q1 (objetivo) define a família e desbloqueia o restante do caminho (antes travava em "Preparando o quiz…" eternamente).
-- Lib de perguntas Q1–Q10 por família (especificação seção 5) e fluxo com limite de 10 perguntas efetivas.
-- Validação de respostas (`src/lib/quiz/schema.ts`).
-- Motor de regras puro no servidor: filtros obrigatórios (seção 6.1), pontuação de preferências apenas com evidência aprovada (seção 6.3, sem inferência por nome de modelo), desempate, motivos com códigos estáveis (seção 6.3).
-- Endpoint `POST /api/recommendations` com contrato de estados (200 / 400 / 409 / 503), leitura de catálogo server-side em `data/catalog.internal.json` (503 se ausente).
-- Tipos de domínio (`src/types/catalog.ts`) conforme seção 8.3.
-- Arquivos de controle: `memorias.md`, `checkpoints.md`, `pedidos.md`.
+## O que foi entregue nesta sessão (importação do CSV)
+- `catalogo.csv` colocado na raiz pelo usuário (Windows-1252, ponto e vírgula, aspas, campos multilinha). Não é commitado (ignorado via `.gitignore`, requisito 9: fonte privada/fora do repo público).
+- `scripts/import-catalog.ts`: leitura com detecção de BOM UTF-8 / conversão Windows-1252 explícita, parser CSV próprio (respeita aspas e campos multilinha, sem `split(';')`), validação de headers obrigatórios, exclusões do anexo B + regras especiais (IDs 353/355/601/603 nunca aparecem; 205 HG 64 fora do MVP; 459 SP 11.000 oculta; 579/583 NT 40/1 preservados separadamente).
+- `data/catalog.internal.json`: 121 máquinas importadas, todas com `quizStatus: "pending"` (requerem aprovação comercial/técnica antes de recomendação — nada aprovado automaticamente, requisito 8.4).
+- `data/report-excluidos.json`: 94 itens excluídos (auditável).
+- `data/report-pendencias.json`: 42 pendências (preço zero, estoque zero, descrição, voltagem, etc.).
+- `src/types/catalog.ts`: adicionado campo `brand` ao `Machine` (requisito 8.3: name/model/brand).
+- Endpoint `POST /api/recommendations`: agora carrega o catálogo (não retorna mais 503). Como nenhuma máquina está aprovada, retorna `no-match` até que a equipe aprove referências com evidência suficiente.
 
 ## O que ainda não está feito
-- Importação do CSV real e geração de `data/catalog.internal.json` (catálogo privado, fora do repo). Enquanto vazio, o endpoint retorna 503.
-- Aprovar seleção inicial de máquinas com evidência suficiente antes do lançamento.
-- Testes automatizados (nenhum runner de teste configurado no package.json).
+- Aprovar seleção inicial de máquinas com evidência suficiente (decisão comercial/técnica — não fazer automaticamente).
+- Testes automatizados (nenhum runner configurado no package.json).
 - Deploy em Vercel e divulgação na loja Tray (após validação comercial/técnica).
