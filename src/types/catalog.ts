@@ -40,6 +40,7 @@ export interface Machine {
   reference: string;
   name: string;
   model: string;
+  brand: string;
   family: Family;
   subtype: string;
   isCompleteMachine: boolean;

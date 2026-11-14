@@ -18,6 +18,9 @@
 /out/
 
 # production
+
+# CSV bruto privado (não commitar — requisito 8.4/9: fonte com custos fica fora do repositório público)
+/catalogo.csv
 /build
 
 # misc
