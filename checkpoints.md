@@ -2,7 +2,7 @@
 Autoria: VIBECODE
 
 ## Estado
-Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/api/recommendations` (dinâmica). TypeScript sem erros no build. Lint limpo nos arquivos novos/alterados (exceto 1 erro pré-existente em `src/types/routes.d.ts`, gerado pelo Next.js).
+Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/api/recommendations` (dinâmica). TypeScript sem erros no build. Lint limpo nos arquivos novos/alterados (exceto 1 erro pré-existente em `src/types/routes.d.ts`, gerado pelo Next.js). CSS global carregado corretamente via `import "./globals.css"` no `layout.tsx` (Tailwind + identidade visual ativos).
 
 ## Commits na branch vibecode
 - ef7405e — Início do quiz: home, fluxo de perguntas, motor de regras, endpoint /api/recommendations, arquivos de controle.
@@ -11,6 +11,7 @@ Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/ap
 - c6ae344 — Correção: quiz inicia com Q1 (objetivo) em vez de travar em carregando.
 - e1aeec4 — Atualiza arquivos de controle após correção do travamento do quiz.
 - aa6f6a7 — Importa catálogo CSV e gera catálogo interno.
+- dfed7e2 — Correção: importa globals.css no layout para carregar Tailwind CSS.
 
 ## O que foi entregue nesta sessão (importação do CSV)
 - `catalogo.csv` colocado na raiz pelo usuário (Windows-1252, ponto e vírgula, aspas, campos multilinha). Não é commitado (ignorado via `.gitignore`, requisito 9: fonte privada/fora do repo público).
