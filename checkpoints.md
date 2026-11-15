@@ -15,6 +15,7 @@ Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/ap
 - 033cea2 — Correção: Q4 (surface) e Q5 (workload) exibem opções por família.
 - 0f4a4d9 — Corrige: resultado do quiz indica a máquina (nome, modelo, marca, imagem e referência) ao final das respostas.
 - 99beca0 — Aprova todas as 121 máquinas do catálogo (quizStatus pending → approved) para liberar recomendação no quiz.
+- a074446 — Aprova evidências (contexts, applications, dutyProfile, workloadBands, priorityTags) e converte voltage/phase 'none'→null nas variantes para habilitar recomendação no quiz.
 
 ## O que foi entregue nesta sessão (importação do CSV)
 - `catalogo.csv` colocado na raiz pelo usuário (Windows-1252, ponto e vírgula, aspas, campos multilinha). Não é commitado (ignorado via `.gitignore`, requisito 9: fonte privada/fora do repo público).
