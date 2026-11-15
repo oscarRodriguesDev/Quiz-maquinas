@@ -38,3 +38,8 @@ Repositório Next.js 16 (App Router, TypeScript, Tailwind v4) vazio do create-ne
 - Aprovar seleção inicial de máquinas com evidência suficiente antes do lançamento (decisão comercial/técnica — não fazer automaticamente).
 - Testes automatizados (parser, elegibilidade, preço, jornada) — nenhum runner de teste configurado ainda.
 - Deploy em Vercel e link na loja Tray apenas após validação comercial/técnica.
+
+### Correção desta sessão (15/11/2026)
+- Problema: o usuário respondia o quiz mas não recebia a indicação da máquina. Causa: o cliente (`Quiz.tsx`) enviava as verificações condicionais Q9/Q10 como chaves diretas em `answers`, enquanto o schema do servidor (`schema.ts`) exige o campo `checks` como objeto. A validação falhava com 400 e o quiz nunca alcançava a tela de resultado.
+- Correção: `submitQuiz` agrupa as respostas cujas chaves iniciam com `check-` sob `checks` (objeto) antes de chamar `POST /api/recommendations`.
+- Validação: `npm run build` OK; endpoint `POST /api/recommendations` retorna 200 com recomendações (testado com família `pressure`, status `direct`, 3 máquinas).

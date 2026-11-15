@@ -30,3 +30,8 @@ Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/ap
 - Aprovar seleção inicial de máquinas com evidência suficiente (decisão comercial/técnica — não fazer automaticamente).
 - Testes automatizados (nenhum runner configurado no package.json).
 - Deploy em Vercel e divulgação na loja Tray (após validação comercial/técnica).
+
+## Última sessão (15/11/2026) — correção: indicação da máquina
+- Corrigido `src/components/quiz/Quiz.tsx`: `submitQuiz` agora agrupa as respostas Q9/Q10 (chaves `check-*`) sob o campo `checks` (objeto), conforme exige o schema do servidor (`schema.ts`). Antes, a validação do servidor retornava 400 e o quiz nunca chegava ao resultado.
+- Build de produção OK, TypeScript sem erros.
+- Endpoint `POST /api/recommendations` testado: retorna 200 com recomendações reais (status `direct`, 3 máquinas com nome/modelo/marca/imagem/preço/motivos).

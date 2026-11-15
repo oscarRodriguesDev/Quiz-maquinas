@@ -90,11 +90,28 @@ export default function Quiz() {
     setSubmitting(true);
     setError(null);
     try {
+      // O contrato do servidor (validateAnswers em schema.ts) espera as
+      // verificações condicionais (Q9/Q10) agrupadas sob a chave "checks".
+      // O estado local armazena cada resposta com seu id direto (goal, ..., check-q9, check-q10),
+      // então montamos o payload no formato esperado antes de enviar.
+      const checks: Record<string, string> = {};
+      const payloadAnswers: Record<string, string | Record<string, string>> = {};
+      for (const [key, value] of Object.entries(answers)) {
+        if (key.startsWith("check-")) {
+          checks[key] = value;
+        } else {
+          payloadAnswers[key] = value;
+        }
+      }
+      if (Object.keys(checks).length > 0) {
+        payloadAnswers.checks = checks;
+      }
+
       const res = await fetch("/api/recommendations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          answers: validateAnswers(answers).answers ?? answers,
+          answers: validateAnswers(payloadAnswers).answers ?? payloadAnswers,
           questionnaireVersion: "quiz-1",
         }),
       });
