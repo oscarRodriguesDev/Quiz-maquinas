@@ -99,6 +99,10 @@ export function recommend(
     return {
       productId: machine.id,
       variantId: variant?.id ?? null,
+      name: machine.name,
+      model: machine.model,
+      brand: machine.brand,
+      imageUrl: machine.imageUrl,
       reasonCodes,
       reasons,
       caveats,

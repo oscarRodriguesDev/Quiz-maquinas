@@ -232,6 +232,10 @@ interface ResultScreenProps {
 type RecommendationItem = {
   productId: string;
   variantId: string | null;
+  name: string;
+  model: string;
+  brand: string;
+  imageUrl: string;
   reasonCodes: string[];
   reasons: string[];
   caveats: string[];
@@ -309,9 +313,20 @@ function ResultScreen({ answers, result, onRestart }: ResultScreenProps) {
                     Recomendação principal
                   </span>
                 )}
+                {item.imageUrl && (
+                  <img
+                    src={item.imageUrl}
+                    alt={`${item.name} ${item.model}`}
+                    className="mb-3 w-full h-24 object-cover rounded-lg bg-border"
+                    loading="lazy"
+                  />
+                )}
                 <h3 className="mt-2 text-base font-[700] text-brand-ink leading-snug">
-                  Referência {item.productId}
+                  {item.name} — {item.model}
                 </h3>
+                <p className="mt-1 text-sm text-text-muted">
+                  {item.brand} • Referência {item.productId}
+                </p>
                 <p className="mt-1 text-sm text-text-muted">
                   Versão: {item.variantId ?? "a confirmar"}
                 </p>

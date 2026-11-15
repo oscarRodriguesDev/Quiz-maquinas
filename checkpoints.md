@@ -12,6 +12,8 @@ Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/ap
 - e1aeec4 — Atualiza arquivos de controle após correção do travamento do quiz.
 - aa6f6a7 — Importa catálogo CSV e gera catálogo interno.
 - dfed7e2 — Correção: importa globals.css no layout para carregar Tailwind CSS.
+- 033cea2 — Correção: Q4 (surface) e Q5 (workload) exibem opções por família.
+- <próximo commit> — Corrige: resultado do quiz indica a máquina (nome, modelo, marca, imagem e referência) ao final das respostas.
 
 ## O que foi entregue nesta sessão (importação do CSV)
 - `catalogo.csv` colocado na raiz pelo usuário (Windows-1252, ponto e vírgula, aspas, campos multilinha). Não é commitado (ignorado via `.gitignore`, requisito 9: fonte privada/fora do repo público).
