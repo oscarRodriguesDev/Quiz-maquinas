@@ -23,6 +23,7 @@ Repositório Next.js 16 (App Router, TypeScript, Tailwind v4) vazio do create-ne
 - `src/lib/catalog/load.ts`: leitura de `data/catalog.internal.json` (fora de public); catálogo ausente → 503.
 - `src/app/api/recommendations/route.ts`: `POST /api/recommendations`, valida versão do questionário (409), valida respostas (400), recalcula no servidor (200 com um dos 4 estados; sem resultado = não é erro HTTP), 503 se catálogo não carregar.
 - `src/lib/recommendations/engine.ts` + `src/types/catalog.ts`: `RecommendationItem` agora expõe `name`, `model`, `brand` e `imageUrl` da máquina recomendada (além de `productId`/`variantId`), para o resultado do quiz indicar a máquina pelo nome, não apenas pela referência.
+- `data/catalog.internal.json`: todas as 121 máquinas tiveram `quizStatus` alterado de `"pending"` para `"approved"` (decisão do usuário), liberando-as para recomendação no quiz (requisito 8.4 respeitado: aprovação explícita, não automática).
 - `src/components/quiz/Quiz.tsx` (`ResultScreen`: exibe imagem, nome, modelo, marca e referência de cada máquina recomendada.
 - `src/types/validator.ts` (gerado pelo Next): removido, referenciava a pasta `app/` raiz deletada; será regenerado no build.
 - Template default da Next substituído pela home do quiz.
