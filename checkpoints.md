@@ -32,6 +32,7 @@ Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/ap
 - Deploy em Vercel e divulgação na loja Tray (após validação comercial/técnica).
 
 ## Última sessão (15/11/2026) — correção: indicação da máquina
-- Corrigido `src/components/quiz/Quiz.tsx`: `submitQuiz` agora agrupa as respostas Q9/Q10 (chaves `check-*`) sob o campo `checks` (objeto), conforme exige o schema do servidor (`schema.ts`). Antes, a validação do servidor retornava 400 e o quiz nunca chegava ao resultado.
+- Corrigido `src/components/quiz/Quiz.tsx`: `submitQuiz` agora agrupa as respostas Q9/Q10 (chaves `check-*`) sob o campo `checks` (objeto, sempre enviado mesmo vazio), conforme exige o schema do servidor (`schema.ts`). Antes, a validação do servidor retornava 400 e o quiz nunca chegava ao resultado.
+- Melhoria de UX: `ResultScreen` exibe mensagem clara "Nenhuma máquina encontrada" quando o status é `no-match` ou não há recomendações, com botão para alterar respostas.
 - Build de produção OK, TypeScript sem erros.
-- Endpoint `POST /api/recommendations` testado: retorna 200 com recomendações reais (status `direct`, 3 máquinas com nome/modelo/marca/imagem/preço/motivos).
+- Todas as 8 famílias testadas retornam STATUS 200. Famílias com máquina exibem recomendações (pressure, vacuum, floor: 3 recs; sweep: 2 recs needs-review). Famílias sem máquina (extraction, steam, drain, pet) exibem `no-match` com mensagem clara.

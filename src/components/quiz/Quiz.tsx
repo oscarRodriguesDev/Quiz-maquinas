@@ -94,6 +94,7 @@ export default function Quiz() {
       // verificações condicionais (Q9/Q10) agrupadas sob a chave "checks".
       // O estado local armazena cada resposta com seu id direto (goal, ..., check-q9, check-q10),
       // então montamos o payload no formato esperado antes de enviar.
+      // "checks" é sempre enviado como objeto (mesmo vazio) para não falhar a validação do servidor.
       const checks: Record<string, string> = {};
       const payloadAnswers: Record<string, string | Record<string, string>> = {};
       for (const [key, value] of Object.entries(answers)) {
@@ -103,9 +104,7 @@ export default function Quiz() {
           payloadAnswers[key] = value;
         }
       }
-      if (Object.keys(checks).length > 0) {
-        payloadAnswers.checks = checks;
-      }
+      payloadAnswers.checks = checks;
 
       const res = await fetch("/api/recommendations", {
         method: "POST",
@@ -297,20 +296,27 @@ function ResultScreen({ answers, result, onRestart }: ResultScreenProps) {
       </h2>
 
       {isNoMatch || items.length === 0 ? (
-        <div className="mt-6 rounded-lg border border-border p-6 bg-surface-muted">
-          <p className="text-brand-ink">
+        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-6">
+          <div className="flex items-start gap-3 mb-3">
+            <span className="shrink-0 text-red-500">⚠</span>
+            <h3 className="font-[800] text-brand-ink text-base">
+              Nenhuma máquina encontrada
+            </h3>
+          </div>
+          <p className="text-brand-ink mb-2">
             {rec?.reviewReasons?.[0] ||
-            "Não foi encontrada máquina compatível com as respostas informadas."}
+            "Não há máquina no catálogo que atenda a todos os filtros com as respostas informadas."}
           </p>
           <p className="mt-2 text-text-secondary">
-            Precisamos confirmar alguns detalhes para indicar uma máquina adequada
-            ao seu uso.
+            Tente alterar algumas respostas (por exemplo, orçamento, frequência de uso ou
+            alimentação) e refazer o quiz, ou fale com um especialista para uma indicação
+            personalizada.
           </p>
           <button
             className="mt-6 rounded-lg border border-brand-ink bg-brand-yellow px-6 py-3 text-brand-ink font-[800] text-base transition-colors hover:bg-[#e6de00]"
             onClick={onRestart}
           >
-            Falar com um especialista
+            Alterar respostas
           </button>
         </div>
       ) : (

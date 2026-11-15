@@ -41,5 +41,6 @@ Repositório Next.js 16 (App Router, TypeScript, Tailwind v4) vazio do create-ne
 
 ### Correção desta sessão (15/11/2026)
 - Problema: o usuário respondia o quiz mas não recebia a indicação da máquina. Causa: o cliente (`Quiz.tsx`) enviava as verificações condicionais Q9/Q10 como chaves diretas em `answers`, enquanto o schema do servidor (`schema.ts`) exige o campo `checks` como objeto. A validação falhava com 400 e o quiz nunca alcançava a tela de resultado.
-- Correção: `submitQuiz` agrupa as respostas cujas chaves iniciam com `check-` sob `checks` (objeto) antes de chamar `POST /api/recommendations`.
-- Validação: `npm run build` OK; endpoint `POST /api/recommendations` retorna 200 com recomendações (testado com família `pressure`, status `direct`, 3 máquinas).
+- Correção: `submitQuiz` agrupa as respostas cujas chaves iniciam com `check-` sob `checks` (objeto, sempre enviado mesmo vazio) antes de chamar `POST /api/recommendations`.
+- Melhoria de UX: tela de resultado (`ResultScreen`) agora exibe mensagem clara "Nenhuma máquina encontrada" quando o status é `no-match` ou não há recomendações, com opção de alterar respostas.
+- Validação: `npm run build` OK; todas as 8 famílias testadas retornam STATUS 200. Famílias com máquina exibem recomendações; famílias sem máquina exibem a mensagem de "não encontrado".
