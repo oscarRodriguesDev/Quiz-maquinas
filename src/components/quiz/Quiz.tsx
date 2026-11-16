@@ -86,83 +86,86 @@ export default function Quiz() {
     [flow],
   );
 
-  const submitQuiz = useCallback(async () => {
-    setSubmitting(true);
-    setError(null);
-    try {
-      // O contrato do servidor (validateAnswers em schema.ts) espera as
-      // verificações condicionais (Q9/Q10) agrupadas sob a chave "checks".
-      // O estado local armazena cada resposta com seu id direto (goal, ..., check-q9, check-q10),
-      // então montamos o payload no formato esperado antes de enviar.
-      // "checks" é sempre enviado como objeto (mesmo vazio) para não falhar a validação do servidor.
-      const checks: Record<string, string> = {};
-      const payloadAnswers: Record<string, string | Record<string, string>> = {};
-      for (const [key, value] of Object.entries(answers)) {
-        if (key.startsWith("check-")) {
-          checks[key] = value;
-        } else {
-          payloadAnswers[key] = value;
-        }
-      }
-      payloadAnswers.checks = checks;
-
-      const validated = validateAnswers(payloadAnswers);
-      if (!validated.valid || !validated.answers) {
-        setError("Respostas inválidas. Revise o questionário e tente novamente.");
-        return;
-      }
-
-      const res = await fetch("/api/recommendations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          answers: validated.answers,
-          questionnaireVersion: "quiz-1",
-        }),
-      });
-
-      if (!res.ok) {
-        let detail = "";
-        try {
-          const errBody = await res.json();
-          detail = errBody.error || errBody.message || "";
-        } catch {
-          /* corpo não é JSON */
-        }
-        if (res.status === 409) {
-          setError(`Versão do questionário incompatível. ${detail} Reinicie o quiz.`);
-          return;
-        }
-        if (res.status === 503) {
-          setError(`O catálogo não pôde ser carregado no momento. ${detail} Tente novamente em instantes.`);
-          return;
-        }
-        setError(`Não foi possível processar as respostas (${res.status}). ${detail} Tente novamente.`);
-        return;
-      }
-
-      let result;
+  const submitQuiz = useCallback(
+    async (answersToSubmit: Record<string, string>) => {
+      setSubmitting(true);
+      setError(null);
       try {
-        result = await res.json();
-      } catch {
-        setError("A resposta do servidor está vazia ou inválida. Tente novamente.");
-        return;
-      }
+        // O contrato do servidor (validateAnswers em schema.ts) espera as
+        // verificações condicionais (Q9/Q10) agrupadas sob a chave "checks".
+        // O estado local armazena cada resposta com seu id direto (goal, ..., check-q9, check-q10),
+        // então montamos o payload no formato esperado antes de enviar.
+        // "checks" é sempre enviado como objeto (mesmo vazio) para não falhar a validação do servidor.
+        const checks: Record<string, string> = {};
+        const payloadAnswers: Record<string, string | Record<string, string>> = {};
+        for (const [key, value] of Object.entries(answersToSubmit)) {
+          if (key.startsWith("check-")) {
+            checks[key] = value;
+          } else {
+            payloadAnswers[key] = value;
+          }
+        }
+        payloadAnswers.checks = checks;
 
-      if (!result || typeof result !== "object") {
-        setError("A resposta do servidor está vazia. Tente novamente.");
-        return;
-      }
+        const validated = validateAnswers(payloadAnswers);
+        if (!validated.valid || !validated.answers) {
+          setError("Respostas inválidas. Revise o questionário e tente novamente.");
+          return;
+        }
 
-      setResult(result);
-      setStage("result");
-    } catch (err) {
-      console.error("Erro ao submeter o quiz:", err);
-      setError("Falha ao comunicar com o servidor. Verifique sua conexão e tente novamente.");
-    } finally {
-      setSubmitting(false);
-    }
-  }, [answers]);
+        const res = await fetch("/api/recommendations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            answers: validated.answers,
+            questionnaireVersion: "quiz-1",
+          }),
+        });
+
+        if (!res.ok) {
+          let detail = "";
+          try {
+            const errBody = await res.json();
+            detail = errBody.error || errBody.message || "";
+          } catch {
+            /* corpo não é JSON */
+          }
+          if (res.status === 409) {
+            setError(`Versão do questionário incompatível. ${detail} Reinicie o quiz.`);
+            return;
+          }
+          if (res.status === 503) {
+            setError(`O catálogo não pôde ser carregado no momento. ${detail} Tente novamente em instantes.`);
+            return;
+          }
+          setError(`Não foi possível processar as respostas (${res.status}). ${detail} Tente novamente.`);
+          return;
+        }
+
+        let result;
+        try {
+          result = await res.json();
+        } catch {
+          setError("A resposta do servidor está vazia ou inválida. Tente novamente.");
+          return;
+        }
+
+        if (!result || typeof result !== "object") {
+          setError("A resposta do servidor está vazia. Tente novamente.");
+          return;
+        }
+
+        setResult(result);
+        setStage("result");
+      } catch (err) {
+        console.error("Erro ao submeter o quiz:", err);
+        setError("Falha ao comunicar com o servidor. Verifique sua conexão e tente novamente.");
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [],
+  );
 
   const selectAnswer = useCallback(
     (value: string) => {
@@ -187,7 +190,7 @@ export default function Quiz() {
         if (unanswered) {
           goToStep(nextFlow.steps.indexOf(unanswered));
         } else {
-          submitQuiz();
+          submitQuiz(nextAnswers);
         }
         return;
       }
@@ -199,7 +202,7 @@ export default function Quiz() {
       if (unanswered) {
         goToStep(nextFlow.steps.indexOf(unanswered));
       } else {
-        submitQuiz();
+        submitQuiz(nextAnswers);
       }
     },
     [answers, currentQuestion, family, goToStep, submitQuiz],
