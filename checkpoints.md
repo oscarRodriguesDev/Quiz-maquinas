@@ -39,3 +39,4 @@ Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/ap
 - Build de produção OK, TypeScript sem erros.
 - Todas as 8 famílias testadas retornam STATUS 200. Famílias com máquina exibem recomendações (pressure, vacuum, floor: 3 recs; sweep: 2 recs needs-review). Famílias sem máquina (extraction, steam, drain, pet) exibem `no-match` com mensagem clara.
 - Diagnóstico: adicionados `console.log` em `submitQuiz` e `selectAnswer` (`Quiz.tsx`) para rastrear onde o fluxo para quando a requisição não é feita.
+- Fallback de envio manual: botão "Enviar resultado" aparece quando todas as respostas obrigatórias foram preenchidas mas o fluxo automático não disparou o `submitQuiz`.
