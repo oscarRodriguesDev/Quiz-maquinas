@@ -91,6 +91,7 @@ export interface QuizAnswers {
 
 export interface RecommendationItem {
   productId: string;
+  productUrl: string;
   variantId: string | null;
   name: string;
   model: string;

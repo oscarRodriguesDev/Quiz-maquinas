@@ -98,6 +98,7 @@ export function recommend(
 
     return {
       productId: machine.id,
+      productUrl: machine.productUrl,
       variantId: variant?.id ?? null,
       name: machine.name,
       model: machine.model,

@@ -19,6 +19,18 @@ export interface EligibleCandidate {
 
 const BUYABLE_STATES: CommercialState[] = ["buyable", "quote"];
 
+/** Subtypes que NÃO devem aparecer como recomendação de máquina completa no quiz. */
+const EXCLUDED_SUBTYPES = new Set([
+  "Peças e Acessórios",
+  "Acessórios",
+  "Varredeiras",
+  "Aspiradores de Pó e Líquidos",
+  "Lavadoras e Secadoras de Piso",
+  "Extratoras",
+  "Higienizadores a Vapor",
+  "Lavadoras de Alta Pressão",
+]);
+
 /** Filtros obrigatórios antes de pontuar (seção 6.1 dos requisitos). */
 export function filterEligible(
   machines: Machine[],
@@ -45,7 +57,16 @@ export function filterEligible(
       });
     }
 
-    // 2. Família compatível com o objetivo (Q1).
+    // 2. Excluir peças, acessórios e categorias que não são máquinas completas recomendáveis.
+    if (EXCLUDED_SUBTYPES.has(machine.subtype)) {
+      issues.push({
+        machineId: machine.id,
+        code: "excluded-subtype",
+        message: `Categoria "${machine.subtype}" não é recomendável no quiz.`,
+      });
+    }
+
+    // 3. Família compatível com o objetivo (Q1).
     if (machine.family !== answers.goal) {
       issues.push({
         machineId: machine.id,

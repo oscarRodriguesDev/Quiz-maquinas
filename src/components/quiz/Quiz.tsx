@@ -350,6 +350,7 @@ interface ResultScreenProps {
 
 type RecommendationItem = {
   productId: string;
+  productUrl: string;
   variantId: string | null;
   name: string;
   model: string;
@@ -476,6 +477,11 @@ function ResultScreen({ answers, result, onRestart }: ResultScreenProps) {
                   Situação: {item.commercialState}
                 </p>
                 <button
+                  onClick={() => {
+                    if (item.productUrl) {
+                      window.open(item.productUrl, "_blank");
+                    }
+                  }}
                   className="mt-4 flex items-center justify-center gap-2 rounded-lg border border-brand-ink bg-brand-yellow px-4 py-2.5 text-brand-ink font-[800] text-sm uppercase tracking-tight transition-colors hover:bg-[#e6de00]"
                 >
                   {actionFor(item.commercialState).label}
