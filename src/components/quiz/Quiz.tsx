@@ -355,6 +355,7 @@ type RecommendationItem = {
   name: string;
   model: string;
   brand: string;
+  descriptionText: string;
   imageUrl: string;
   reasonCodes: string[];
   reasons: string[];
@@ -457,8 +458,8 @@ function ResultScreen({ answers, result, onRestart }: ResultScreenProps) {
                 <p className="mt-1 text-sm text-text-muted">
                   Versão: {item.variantId ?? "a confirmar"}
                 </p>
-                <p className="mt-2 text-base font-[800] text-brand-ink">
-                  {formatPrice(item.priceCents)}
+                <p className="mt-2 text-sm text-brand-ink leading-snug">
+                  {item.descriptionText}
                 </p>
                 <ul className="mt-3 space-y-1 text-sm text-brand-ink">
                   {item.reasons.slice(0, 3).map((reason, j) => (

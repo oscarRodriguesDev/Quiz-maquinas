@@ -96,6 +96,7 @@ export interface RecommendationItem {
   name: string;
   model: string;
   brand: string;
+  descriptionText: string;
   imageUrl: string;
   reasonCodes: string[];
   reasons: string[];

@@ -96,6 +96,11 @@ export function recommend(
       caveats.push("Dados comerciais pendentes de validação pela equipe.");
     }
 
+    const mainReason = reasons[0] || "Ideal para o seu uso informado no quiz.";
+    const descriptionPersuasiva = machine.descriptionText
+      ? `${machine.descriptionText} ${mainReason}`
+      : mainReason;
+
     return {
       productId: machine.id,
       productUrl: machine.productUrl,
@@ -103,6 +108,7 @@ export function recommend(
       name: machine.name,
       model: machine.model,
       brand: machine.brand,
+      descriptionText: descriptionPersuasiva,
       imageUrl: machine.imageUrl,
       reasonCodes,
       reasons,
