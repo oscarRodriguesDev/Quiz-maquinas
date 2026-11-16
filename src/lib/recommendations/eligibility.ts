@@ -23,12 +23,7 @@ const BUYABLE_STATES: CommercialState[] = ["buyable", "quote"];
 const EXCLUDED_SUBTYPES = new Set([
   "Peças e Acessórios",
   "Acessórios",
-  "Varredeiras",
-  "Aspiradores de Pó e Líquidos",
-  "Lavadoras e Secadoras de Piso",
-  "Extratoras",
-  "Higienizadores a Vapor",
-  "Lavadoras de Alta Pressão",
+  "Detergente",
 ]);
 
 /** Filtros obrigatórios antes de pontuar (seção 6.1 dos requisitos). */
