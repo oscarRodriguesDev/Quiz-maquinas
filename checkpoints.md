@@ -42,4 +42,5 @@ Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/ap
 - Correção definitiva: `useEffect` dispara `submitQuiz(answers)` automaticamente assim que as 8 respostas obrigatórias estão preenchidas, não importa se Q9/Q10 ainda não foram respondidas.
 - Filtro de categorias: adicionado `EXCLUDED_SUBTYPES` no `eligibility.ts` para excluir peças e acessórios, químicos ("Detergente") e categorias não recomendáveis (Varredeiras, Aspiradores de Pó e Líquidos, Lavadoras e Secadoras de Piso, Extratoras, Higienizadores a Vapor, Lavadoras de Alta Pressão).
 - Links da loja: adicionado `productUrl` ao `RecommendationItem` e preenchido no `engine.ts`. Botões de ação abrem o link da máquina na loja (target="_blank").
+- Resultado do quiz: removido o preço da máquina. Agora exibe descrição persuasiva (descrição do catálogo + motivo da recomendação) e botão para acessar a máquina na loja.
 - Aviso: após aplicar todos os filtros de exclusão solicitados, não resta nenhuma máquina no catálogo (121 → 0 quando combinado com família específica). Usuário precisa revisar quais categorias realmente deseja excluir.
