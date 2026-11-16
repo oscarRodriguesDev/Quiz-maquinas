@@ -106,35 +106,59 @@ export default function Quiz() {
       }
       payloadAnswers.checks = checks;
 
+      const validated = validateAnswers(payloadAnswers);
+      if (!validated.valid || !validated.answers) {
+        setError("Respostas inválidas. Revise o questionário e tente novamente.");
+        return;
+      }
+
       const res = await fetch("/api/recommendations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          answers: validateAnswers(payloadAnswers).answers ?? payloadAnswers,
+          answers: validated.answers,
           questionnaireVersion: "quiz-1",
         }),
       });
 
       if (!res.ok) {
+        let detail = "";
+        try {
+          const errBody = await res.json();
+          detail = errBody.error || errBody.message || "";
+        } catch {
+          /* corpo não é JSON */
+        }
         if (res.status === 409) {
-          setError("Versão do questionário incompatível. Reinicie o quiz.");
+          setError(`Versão do questionário incompatível. ${detail} Reinicie o quiz.`);
           return;
         }
         if (res.status === 503) {
-          setError(
-            "O catálogo não pôde ser carregado no momento. Tente novamente em instantes.",
-          );
+          setError(`O catálogo não pôde ser carregado no momento. ${detail} Tente novamente em instantes.`);
           return;
         }
-        setError("Não foi possível processar as respostas. Tente novamente.");
+        setError(`Não foi possível processar as respostas (${res.status}). ${detail} Tente novamente.`);
         return;
       }
 
-      const result = await res.json();
+      let result;
+      try {
+        result = await res.json();
+      } catch {
+        setError("A resposta do servidor está vazia ou inválida. Tente novamente.");
+        return;
+      }
+
+      if (!result || typeof result !== "object") {
+        setError("A resposta do servidor está vazia. Tente novamente.");
+        return;
+      }
+
       setResult(result);
       setStage("result");
-    } catch {
-      setError("Falha ao comunicar com o servidor. Verifique sua conexão.");
+    } catch (err) {
+      console.error("Erro ao submeter o quiz:", err);
+      setError("Falha ao comunicar com o servidor. Verifique sua conexão e tente novamente.");
     } finally {
       setSubmitting(false);
     }
