@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { QuestionCard } from "./QuestionCard";
 import { Progress } from "./Progress";
 import type { Family } from "@/types/catalog";
@@ -177,7 +177,11 @@ export default function Quiz() {
 
   const selectAnswer = useCallback(
     (value: string) => {
-      console.log("[Quiz] selectAnswer chamado:", { questionId: currentQuestion?.id, value });
+      console.log("[Quiz] selectAnswer chamado:", {
+        questionId: currentQuestion?.id,
+        value,
+        currentAnswersCount: Object.keys(answers).length,
+      });
       if (!currentQuestion) {
         console.log("[Quiz] selectAnswer: currentQuestion indefinido, saindo.");
         return;
@@ -200,7 +204,10 @@ export default function Quiz() {
         const unanswered = nextFlow.steps.find(
           (s) => !(s.questionId in nextAnswers),
         );
-        console.log("[Quiz] Q1 fluxo:", { steps: nextFlow.steps.map(s => s.questionId), unanswered: unanswered?.questionId });
+        console.log("[Quiz] Q1 fluxo:", {
+          steps: nextFlow.steps.map((s) => s.questionId),
+          unanswered: unanswered?.questionId,
+        });
         if (unanswered) {
           goToStep(nextFlow.steps.indexOf(unanswered));
         } else {
@@ -215,7 +222,10 @@ export default function Quiz() {
       const unanswered = nextFlow.steps.find(
         (s) => !(s.questionId in nextAnswers),
       );
-      console.log("[Quiz] fluxo:", { steps: nextFlow.steps.map(s => s.questionId), unanswered: unanswered?.questionId });
+      console.log("[Quiz] fluxo:", {
+        steps: nextFlow.steps.map((s) => s.questionId),
+        unanswered: unanswered?.questionId,
+      });
       if (unanswered) {
         goToStep(nextFlow.steps.indexOf(unanswered));
       } else {
@@ -225,6 +235,14 @@ export default function Quiz() {
     },
     [answers, currentQuestion, family, goToStep, submitQuiz],
   );
+
+  // Fallback: envio manual caso o fluxo automático não dispare submitQuiz
+  const [showManualSubmit, setShowManualSubmit] = useState(false);
+
+  const handleManualSubmit = useCallback(() => {
+    console.log("[Quiz] Envio manual disparado com answers:", answers);
+    submitQuiz(answers);
+  }, [answers, submitQuiz]);
 
   const restartQuiz = useCallback(() => {
     setAnswers({});
@@ -240,6 +258,31 @@ export default function Quiz() {
     const answered = flow.steps.filter((s) => s.questionId in answers).length;
     return { current: displayIndex + 1, total: flow.steps.length, answered };
   }, [family, flow, displayIndex, answers]);
+
+  // Mostra botão de envio manual quando todas as perguntas obrigatórias foram
+  // respondidas mas o resultado ainda não foi obtido.
+  useEffect(() => {
+    const required = [
+      "goal",
+      "context",
+      "frequency",
+      "surface",
+      "workload",
+      "power",
+      "priority",
+      "budget",
+    ];
+    const allRequiredAnswered = required.every(
+      (key) => answers[key] !== undefined && answers[key] !== "",
+    );
+    const hasChecks =
+      Object.keys(answers).some((k) => k.startsWith("check-")) ||
+      family === "vacuum" ||
+      family === "pet";
+    if (allRequiredAnswered && !result && stage === "questions") {
+      setShowManualSubmit(true);
+    }
+  }, [answers, family, result, stage]);
 
   if (stage === "result") {
     return (
@@ -279,6 +322,22 @@ export default function Quiz() {
           canBack={displayIndex > 0}
           disabled={submitting}
         />
+
+        {/* Botão de envio manual como fallback caso o fluxo automático não dispare */}
+        {showManualSubmit && !submitting && stage === "questions" && (
+          <div className="mt-8 flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={handleManualSubmit}
+              disabled={submitting}
+              className="w-full sm:w-auto rounded-lg border border-brand-ink bg-brand-yellow px-6 py-3 text-brand-ink font-[800] text-base uppercase tracking-tight transition-colors hover:bg-[#e6de00] disabled:opacity-50 disabled:pointer-events-none"
+            >
+              Enviar resultado
+            </button>
+            <p className="text-xs text-text-muted">
+              Todas as respostas preenchidas. Clique para obter a indicação da máquina.
+            </p>
+          </div>
+        )}
       </div>
     </section>
   );
