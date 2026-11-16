@@ -33,6 +33,7 @@ Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/ap
 
 ## Última sessão (15/11/2026) — correção: indicação da máquina
 - Corrigido `src/components/quiz/Quiz.tsx`: `submitQuiz` agora agrupa as respostas Q9/Q10 (chaves `check-*`) sob o campo `checks` (objeto, sempre enviado mesmo vazio), conforme exige o schema do servidor (`schema.ts`). Antes, a validação do servidor retornava 400 e o quiz nunca chegava ao resultado.
+- Correção crítica: `submitQuiz` agora recebe as respostas como parâmetro (`nextAnswers`) em vez de ler do estado `answers` (desatualizado pelo `setAnswers` assíncrono). Antes, a última resposta nunca era enviada e o quiz nunca chegava ao resultado.
 - Melhoria de UX: `ResultScreen` exibe mensagem clara "Nenhuma máquina encontrada" quando o status é `no-match` ou não há recomendações, com botão para alterar respostas.
 - Robustez do cliente: validação local antes de enviar, extração de mensagem de erro detalhada do corpo da resposta (400/409/503), tratamento de resposta vazia/inválida do `res.json()` e `console.error` para diagnóstico.
 - Build de produção OK, TypeScript sem erros.
