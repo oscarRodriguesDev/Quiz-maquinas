@@ -259,9 +259,10 @@ export default function Quiz() {
     return { current: displayIndex + 1, total: flow.steps.length, answered };
   }, [family, flow, displayIndex, answers]);
 
-  // Mostra botão de envio manual quando todas as perguntas obrigatórias foram
-  // respondidas mas o resultado ainda não foi obtido. Isso serve como fallback
-  // caso o fluxo automático não dispare submitQuiz (ex: faltando apenas Q9/Q10).
+  // Quando todas as 8 respostas obrigatórias estão preenchidas e ainda não há
+  // resultado, dispara o submitQuiz automaticamente. Isso garante que o usuário
+  // sempre receba a indicação da máquina mesmo se o fluxo de perguntas não
+  // cobrir Q9/Q10 ou se o currentQuestion sumir.
   useEffect(() => {
     const required = [
       "goal",
@@ -276,10 +277,11 @@ export default function Quiz() {
     const allRequiredAnswered = required.every(
       (key) => answers[key] !== undefined && answers[key] !== "",
     );
-    if (allRequiredAnswered && !result && stage === "questions") {
-      setShowManualSubmit(true);
+    if (allRequiredAnswered && !result && stage === "questions" && !submitting) {
+      console.log("[Quiz] Todas as respostas obrigatórias preenchidas, disparando submitQuiz automático");
+      submitQuiz(answers);
     }
-  }, [answers, family, result, stage]);
+  }, [answers, family, result, stage, submitting]);
 
   if (stage === "result") {
     return (
