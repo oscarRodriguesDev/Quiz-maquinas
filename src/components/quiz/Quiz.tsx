@@ -88,6 +88,7 @@ export default function Quiz() {
 
   const submitQuiz = useCallback(
     async (answersToSubmit: Record<string, string>) => {
+      console.log("[Quiz] submitQuiz chamado com answers:", answersToSubmit);
       setSubmitting(true);
       setError(null);
       try {
@@ -107,12 +108,16 @@ export default function Quiz() {
         }
         payloadAnswers.checks = checks;
 
+        console.log("[Quiz] payload montado:", payloadAnswers);
+
         const validated = validateAnswers(payloadAnswers);
         if (!validated.valid || !validated.answers) {
+          console.log("[Quiz] validação falhou:", validated.errors);
           setError("Respostas inválidas. Revise o questionário e tente novamente.");
           return;
         }
 
+        console.log("[Quiz] fazendo fetch para /api/recommendations");
         const res = await fetch("/api/recommendations", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -121,6 +126,8 @@ export default function Quiz() {
             questionnaireVersion: "quiz-1",
           }),
         });
+
+        console.log("[Quiz] resposta do servidor:", res.status, res.statusText);
 
         if (!res.ok) {
           let detail = "";
@@ -145,6 +152,7 @@ export default function Quiz() {
         let result;
         try {
           result = await res.json();
+          console.log("[Quiz] resultado recebido:", result);
         } catch {
           setError("A resposta do servidor está vazia ou inválida. Tente novamente.");
           return;
@@ -169,7 +177,11 @@ export default function Quiz() {
 
   const selectAnswer = useCallback(
     (value: string) => {
-      if (!currentQuestion) return;
+      console.log("[Quiz] selectAnswer chamado:", { questionId: currentQuestion?.id, value });
+      if (!currentQuestion) {
+        console.log("[Quiz] selectAnswer: currentQuestion indefinido, saindo.");
+        return;
+      }
       setError(null);
 
       const nextAnswers = { ...answers, [currentQuestion.id]: value };
@@ -183,25 +195,31 @@ export default function Quiz() {
 
       // Se a família acabou de ser escolhida (Q1), o fluxo agora existe.
       if (!family && value) {
+        console.log("[Quiz] Q1 selecionado, família:", value);
         const nextFlow = buildFlow(value as Family, nextAnswers);
         const unanswered = nextFlow.steps.find(
           (s) => !(s.questionId in nextAnswers),
         );
+        console.log("[Quiz] Q1 fluxo:", { steps: nextFlow.steps.map(s => s.questionId), unanswered: unanswered?.questionId });
         if (unanswered) {
           goToStep(nextFlow.steps.indexOf(unanswered));
         } else {
+          console.log("[Quiz] Q1: todas respondidas, chamando submitQuiz");
           submitQuiz(nextAnswers);
         }
         return;
       }
 
+      console.log("[Quiz] família atual:", family);
       const nextFlow = buildFlow(family as Family, nextAnswers);
       const unanswered = nextFlow.steps.find(
         (s) => !(s.questionId in nextAnswers),
       );
+      console.log("[Quiz] fluxo:", { steps: nextFlow.steps.map(s => s.questionId), unanswered: unanswered?.questionId });
       if (unanswered) {
         goToStep(nextFlow.steps.indexOf(unanswered));
       } else {
+        console.log("[Quiz] todas respondidas, chamando submitQuiz");
         submitQuiz(nextAnswers);
       }
     },
