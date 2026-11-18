@@ -61,3 +61,4 @@ Repositório Next.js 16 (App Router, TypeScript, Tailwind v4) vazio do create-ne
 - `src/app/page.tsx` (home): hero com logo Kärcher + assinatura "Kärcher Center Dikmaq", CTA amarelo da marca.
 - `src/components/quiz/QuestionCard.tsx`: número da etapa em badge, legend em tinta da marca, opções selecionadas em amarelo da marca.
 - `src/components/quiz/Quiz.tsx`: assinatura Kärcher nas telas de carregamento, perguntas e resultado; cores da marca nos botões.
+- `src/components/layout/Footer.tsx`: footer institucional baseado no site karcher-center-dikmaq.com.br com logo Kärcher Center Dikmaq, redes sociais (Facebook, Instagram, YouTube, TikTok, LinkedIn), links institucionais, atendimento (telefones, WhatsApp, e-mail), formas de pagamento (Visa, MasterCard, Diners, Amex, Elo, Boleto, Pix), selos de segurança e rodapé com tecnologia Tray.

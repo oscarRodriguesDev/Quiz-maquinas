@@ -49,6 +49,7 @@ Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/ap
 - Build de produção OK (`npm run build`), TypeScript sem erros, páginas estáticas geradas.
 - `globals.css`: fonte Klean via @font-face + token amarelo escuro para hover.
 - Novo componente: `src/components/layout/Header.tsx` com logo Kärcher e assinatura "Kärcher Center Dikmaq".
-- `layout.tsx`: inclui Header.
+- Novo componente: `src/components/layout/Footer.tsx` baseado no site karcher-center-dikmaq.com.br (logo, redes sociais, institucional, atendimento, pagamentos, selos, rodapé com CNPJ).
+- `layout.tsx`: inclui Header e Footer.
 - `page.tsx` (home): hero com logo Kärcher + "Kärcher Center Dikmaq".
 - `QuestionCard.tsx` e `Quiz.tsx`: alinhados às cores da marca (amarelo #FFED00, tinta #161922) e assinatura Kärcher nas telas.
