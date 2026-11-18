@@ -67,3 +67,8 @@ Repositório Next.js 16 (App Router, TypeScript, Tailwind v4) vazio do create-ne
 
 - `data/catalog.internal.json`: re-importado com encoding correto (CSV Windows-1252 lido via TextDecoder windows-1252). Caracteres acentuados corrigidos (ex: "Portátil", "pressão", "Kärcher", "não"). 0 caracteres de substituição. Todas as 121 máquinas com `quizStatus: "approved"` para que qualquer combinação de respostas retorne máquinas.
 - `scripts/import-catalog.ts`: `quizStatus` definido como `"approved"` por padrão (não mais `"pending"`), garantindo que qualquer combinação de respostas retorne máquinas.
+
+### Correção de recomendação e layout (nesta sessão)
+- `src/lib/recommendations/engine.ts`: fallback de recomendação — quando não há candidatos elegíveis, relaxa critérios por família do objetivo e depois por qualquer máquina aprovada, garantindo que SEMPRE retorne pelo menos uma máquina (nunca "no-match"). Respeita EXCLUDED_SUBTYPES para não mostrar peças/acessórios.
+- `src/lib/recommendations/eligibility.ts`: trata voltagem "none" como compatível (assim como null), permitindo máquinas sem voltagem informada aparecerem (ex: Portátil).
+- `src/components/quiz/QuestionCard.tsx`: opções de resposta exibidas em coluna (flex-col) em vez de grid.

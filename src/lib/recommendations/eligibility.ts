@@ -95,6 +95,7 @@ export function filterEligible(
       const [voltage] = answers.power.split("-");
       const voltageOk =
         variant.voltage.value === null ||
+        variant.voltage.value === "none" ||
         variant.voltage.value === "bivolt" ||
         variant.voltage.value === voltage ||
         answers.power === "both-single" ||

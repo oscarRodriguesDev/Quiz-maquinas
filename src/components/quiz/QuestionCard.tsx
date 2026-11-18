@@ -42,7 +42,7 @@ export function QuestionCard({
           {question.help && (
             <p className="text-sm text-text-secondary">{question.help}</p>
           )}
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="flex flex-col gap-3 w-full">
             {question.options.map((option) => (
               <label
                 key={option.id}

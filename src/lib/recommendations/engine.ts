@@ -5,13 +5,20 @@ import type {
   RecommendationResult,
 } from "../../types/catalog";
 
-import { filterEligible } from "./eligibility";
+import { filterEligible, type EligibleCandidate } from "./eligibility";
 import type { ScoredCandidate } from "./scoring";
 import { rankCandidates, scoreCandidates } from "./scoring";
 import { reasonText, type ReasonCode } from "./reasons";
 
 const CATALOG_VERSION = "snapshot-1";
 const RULES_VERSION = "rules-1";
+
+/** Subtypes que NÃO devem aparecer como recomendação de máquina completa no quiz. */
+const EXCLUDED_SUBTYPES = new Set([
+  "Peças e Acessórios",
+  "Acessórios",
+  "Detergente",
+]);
 
 function commercialStateOfCandidate(c: ScoredCandidate): CommercialState {
   return c.variant?.commercialState ?? c.machine.commercial.state;
@@ -43,10 +50,53 @@ export function recommend(
   answers: QuizAnswers,
 ): RecommendationResult {
   const eligible = filterEligible(machines, answers);
-  const scored = scoreCandidates(eligible, answers);
+
+  // Fallback: quando não há candidatos elegíveis após os filtros obrigatórios,
+  // relaxar os critérios para garantir que SEMPRE retorne pelo menos uma máquina.
+  // O usuário quer que qualquer combinação resulte em uma indicação.
+  let candidates: EligibleCandidate[] = eligible;
+  let usedFallback = false;
+  if (candidates.length === 0) {
+    usedFallback = true;
+    // Tentar apenas pela família do objetivo (relaxar energia, orçamento, etc.)
+    const familyMachines = machines.filter(
+      (m) =>
+        m.quizStatus === "approved" &&
+        m.isCompleteMachine &&
+        m.family === answers.goal &&
+        !EXCLUDED_SUBTYPES.has(m.subtype) &&
+        m.commercial.visible &&
+        m.commercial.enabled &&
+        m.commercial.state !== "hidden",
+    );
+    candidates = familyMachines.map((m) => ({
+      machine: m,
+      variant: null,
+      issues: [],
+    }));
+    // Se ainda nada, retornar as máquinas aprovadas de qualquer família.
+    if (candidates.length === 0) {
+      const anyMachines = machines.filter(
+        (m) =>
+          m.quizStatus === "approved" &&
+          m.isCompleteMachine &&
+          !EXCLUDED_SUBTYPES.has(m.subtype) &&
+          m.commercial.visible &&
+          m.commercial.enabled &&
+          m.commercial.state !== "hidden",
+      );
+      candidates = anyMachines.map((m) => ({
+        machine: m,
+        variant: null,
+        issues: [],
+      }));
+    }
+  }
+
+  const scored = scoreCandidates(candidates, answers);
   const ranked = rankCandidates(scored);
 
-  const status = statusFor(ranked);
+  const status = usedFallback && ranked.length === 0 ? "no-match" : statusFor(ranked);
 
   const recommendations = ranked.slice(0, 3).map((candidate) => {
     const { machine, variant } = candidate;
