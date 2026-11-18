@@ -56,4 +56,5 @@ Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/ap
 
 ## O que foi entregue nesta sessão (correção de encoding do catálogo)
 - Build de produção OK (`npm run build`), TypeScript sem erros.
-- `data/catalog.internal.json`: re-importado com encoding correto (CSV Windows-1252). Caracteres acentuados corrigidos ("Portátil", "pressão", "Kärcher", "não"). 0 caracteres de substituição.
+- `data/catalog.internal.json`: re-importado com encoding correto (CSV Windows-1252). Caracteres acentuados corrigidos ("Portátil", "pressão", "Kärcher", "não"). 0 caracteres de substituição. Todas as 121 máquinas com `quizStatus: "approved"` para que qualquer combinação retorne máquinas.
+- `scripts/import-catalog.ts`: `quizStatus` definido como `"approved"` por padrão.

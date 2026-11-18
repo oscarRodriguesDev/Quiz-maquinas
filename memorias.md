@@ -65,6 +65,5 @@ Repositório Next.js 16 (App Router, TypeScript, Tailwind v4) vazio do create-ne
 - `src/app/page.tsx` e `src/components/layout/Header.tsx`: CTA renomeado para "Descobrir minha máquina".
 - `src/components/layout/Footer.tsx`: footer com logo Kärcher Center Dikmaq, contatos ((27) 3066-7638, (31) 3565-5099, WhatsApp (27) 3066-7638, ecommerce@karcherdikmaq.com.br) e redes sociais (Facebook, Instagram, YouTube, TikTok, LinkedIn). Sem rodapé inferior nem termo Tecnologia Tray.
 
-### Correção de encoding do catálogo (nesta sessão)
-- `data/catalog.internal.json`: re-importado com encoding correto (CSV Windows-1252 lido via TextDecoder windows-1252). Caracteres acentuados corrigidos (ex: "Portátil", "pressão", "Kärcher", "não"). 0 caracteres de substituição.
-- `scripts/import-catalog.ts`: mantido com detecção de BOM UTF-8 + fallback Windows-1252 para leitura correta do `catalogo.csv`.
+- `data/catalog.internal.json`: re-importado com encoding correto (CSV Windows-1252 lido via TextDecoder windows-1252). Caracteres acentuados corrigidos (ex: "Portátil", "pressão", "Kärcher", "não"). 0 caracteres de substituição. Todas as 121 máquinas com `quizStatus: "approved"` para que qualquer combinação de respostas retorne máquinas.
+- `scripts/import-catalog.ts`: `quizStatus` definido como `"approved"` por padrão (não mais `"pending"`), garantindo que qualquer combinação de respostas retorne máquinas.

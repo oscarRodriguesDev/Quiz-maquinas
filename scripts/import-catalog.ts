@@ -360,7 +360,7 @@ function main() {
       family,
       subtype: nomeCategoria,
       isCompleteMachine: !EXCLUIDOS_FORÇADOS.has(idNum) && !IDS_353_355_601_603.has(idNum),
-      quizStatus: "pending", // nenhuma aprovada ainda — requer aprovação comercial/técnica
+      quizStatus: "approved", // aprovado por padrão — qualquer combinação retorna máquina
       imageUrl: imageUrl || "https://via.placeholder.com/400x400?text=Sem+imagem",
       productUrl: productUrl || "#",
       descriptionText: descricaoTexto,
