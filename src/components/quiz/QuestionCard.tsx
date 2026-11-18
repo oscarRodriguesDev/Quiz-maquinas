@@ -24,11 +24,16 @@ export function QuestionCard({
   return (
     <article className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <span className="text-xs font-[700] uppercase tracking-wider text-accent">
-          Pergunta {step} de {total}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center justify-center w-6 h-6 rounded-full border border-brand-ink bg-brand-ink text-surface text-[10px] font-[800]">
+            {step}
+          </span>
+          <span className="text-xs font-[700] uppercase tracking-wider text-accent">
+            Pergunta {step} de {total}
+          </span>
+        </div>
         <fieldset className="border-none p-0 m-0 flex flex-col gap-3">
-          <legend className="text-[26px] sm:text-[30px] font-[900] tracking-[-1px] text-brand-ink leading-tight">
+          <legend className="text-[24px] sm:text-[28px] font-[900] tracking-[-0.5px] text-brand-ink leading-tight">
             {question.title}
           </legend>
           {question.help && (
@@ -40,8 +45,8 @@ export function QuestionCard({
                 key={option.id}
                 className={`flex flex-col items-center justify-between gap-2 rounded-lg border-2 p-4 text-center transition-all ${
                   value === option.id
-                    ? "border-brand-ink bg-brand-yellow text-brand-ink"
-                    : "border-border bg-surface text-brand-ink hover:border-text-secondary"
+                    ? "border-brand-ink bg-brand-yellow text-brand-ink shadow-sm"
+                    : "border-border bg-surface text-brand-ink hover:border-text-secondary hover:bg-surface-muted"
                 }`}
               >
                 <input
@@ -75,7 +80,7 @@ export function QuestionCard({
         </fieldset>
       </div>
 
-      <footer className="mt-4 flex flex-col sm:flex-row gap-3 justify-between items-end">
+      <footer className="mt-6 flex flex-col sm:flex-row gap-3 justify-between items-end border-t border-border-soft pt-6">
         <button
           type="button"
           disabled={!canBack || disabled}
@@ -88,7 +93,7 @@ export function QuestionCard({
           type="button"
           disabled={!value || disabled}
           onClick={() => onSelect(value!)}
-          className="rounded-lg border border-brand-ink bg-brand-yellow px-6 py-3 text-brand-ink font-[800] text-base uppercase tracking-tight transition-colors hover:bg-[#e6de00] disabled:opacity-50 disabled:pointer-events-none"
+          className="rounded-lg border border-brand-ink bg-brand-yellow px-6 py-3 text-brand-ink font-[800] text-base uppercase tracking-tight transition-colors hover:bg-brand-yellow-dark disabled:opacity-50 disabled:pointer-events-none shadow-sm"
         >
           Continuar
         </button>

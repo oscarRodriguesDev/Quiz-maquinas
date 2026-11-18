@@ -53,3 +53,11 @@ Repositório Next.js 16 (App Router, TypeScript, Tailwind v4) vazio do create-ne
 - Links da loja: adicionado campo `productUrl` ao tipo `RecommendationItem` e preenchido no `engine.ts`. Os botões de ação agora abrem o link da máquina na loja (target="_blank").
 - Resultado do quiz: removido o preço da máquina. Agora exibe apenas nome, modelo, marca, versão, descrição persuasiva (combina descrição do catálogo + motivo da recomendação) e botão para acessar a máquina na loja.
 - Aviso importante: após aplicar todos os filtros de exclusão solicitados (peças, acessórios, detergentes, varredeiras, aspiradores, limpadoras de piso, estratoras, higienizadores a vapor, lavadoras de alta pressão), NÃO RESTA nenhuma máquina no catálogo disponível (121 itens → 0 após todos os filtros combinados com família específica). O usuário precisa revisar quais categorias realmente deseja excluir.
+
+### Identidade corporativa da Kärcher (nesta sessão)
+- `src/app/globals.css`: fonte proprietária Klean registrada via @font-face (com fallback Clan Pro → stack geometrico); token --color-brand-yellow-dark (#E6DE00) adicionado para estados hover.
+- `src/components/layout/Header.tsx`: header com logo Kärcher (fundo transparente do portal mktkarcher), assinatura "Kärcher Center Dikmaq", navegação (Início / Quiz de máquinas) e CTA "Encontrar minha máquina".
+- `src/app/layout.tsx`: inclui Header; mantém lang="pt-BR", fonte Clan Pro via CDN e tema claro.
+- `src/app/page.tsx` (home): hero com logo Kärcher + assinatura "Kärcher Center Dikmaq", CTA amarelo da marca.
+- `src/components/quiz/QuestionCard.tsx`: número da etapa em badge, legend em tinta da marca, opções selecionadas em amarelo da marca.
+- `src/components/quiz/Quiz.tsx`: assinatura Kärcher nas telas de carregamento, perguntas e resultado; cores da marca nos botões.

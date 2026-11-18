@@ -291,7 +291,20 @@ export default function Quiz() {
 
   if (!currentQuestion) {
     return (
-      <section className="flex flex-1 w-full flex-col items-center justify-center bg-white p-6">
+      <section className="flex flex-1 w-full flex-col items-center justify-center bg-white p-6 sm:p-8">
+        <div className="inline-flex items-center gap-2 mb-3">
+          <img
+            src="https://mktkarcher.com.br/download/105/institucionais/1_lVImt0Itud1YA6owcH5VBFyjSULRZMj/LOGO%20KARCHER%20FUNDO%20TRANSPARENTE%20BAIXA.png"
+            alt="Kärcher"
+            width="80"
+            height="27"
+            className="h-6 w-auto object-contain"
+            loading="lazy"
+          />
+          <span className="font-klean font-[800] text-brand-ink text-xs sm:text-sm uppercase tracking-tight">
+            Kärcher Center Dikmaq
+          </span>
+        </div>
         <p className="text-brand-ink">Preparando o quiz…</p>
       </section>
     );
@@ -300,6 +313,21 @@ export default function Quiz() {
   return (
     <section className="flex flex-1 w-full flex-col bg-white">
       <div className="flex-1 w-full overflow-y-auto p-6 sm:p-8" ref={scrollRef}>
+        <div className="flex items-center justify-between mb-6">
+          <div className="inline-flex items-center gap-2">
+            <img
+              src="https://mktkarcher.com.br/download/105/institucionais/1_lVImt0Itud1YA6owcH5VBFyjSULRZMj/LOGO%20KARCHER%20FUNDO%20TRANSPARENTE%20BAIXA.png"
+              alt="Kärcher"
+              width="72"
+              height="24"
+              className="h-5 w-auto object-contain"
+              loading="lazy"
+            />
+            <span className="font-klean font-[800] text-brand-ink text-xs sm:text-sm uppercase tracking-tight">
+              Kärcher Center Dikmaq
+            </span>
+          </div>
+        </div>
         {error && (
           <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 text-sm">
             {error}
@@ -396,6 +424,19 @@ function ResultScreen({ answers, result, onRestart }: ResultScreenProps) {
 
   return (
     <section className="flex flex-1 w-full flex-col bg-white p-6 sm:p-8">
+      <div className="flex items-center gap-2 mb-6">
+        <img
+          src="https://mktkarcher.com.br/download/105/institucionais/1_lVImt0Itud1YA6owcH5VBFyjSULRZMj/LOGO%20KARCHER%20FUNDO%20TRANSPARENTE%20BAIXA.png"
+          alt="Kärcher"
+          width="88"
+          height="30"
+          className="h-7 w-auto object-contain"
+          loading="lazy"
+        />
+        <span className="font-klean font-[800] text-brand-ink text-xs sm:text-sm uppercase tracking-tight">
+          Kärcher Center Dikmaq
+        </span>
+      </div>
       <h2 className="text-[30px] sm:text-[40px] font-[900] tracking-[-1px] text-brand-ink">
         Resultado da sua busca
       </h2>

@@ -44,3 +44,11 @@ Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/ap
 - Links da loja: adicionado `productUrl` ao `RecommendationItem` e preenchido no `engine.ts`. Botões de ação abrem o link da máquina na loja (target="_blank").
 - Resultado do quiz: removido o preço da máquina. Agora exibe descrição persuasiva (descrição do catálogo + motivo da recomendação) e botão para acessar a máquina na loja.
 - Aviso: após aplicar todos os filtros de exclusão solicitados, não resta nenhuma máquina no catálogo (121 → 0 quando combinado com família específica). Usuário precisa revisar quais categorias realmente deseja excluir.
+
+## O que foi entregue nesta sessão (identidade corporativa Kärcher)
+- Build de produção OK (`npm run build`), TypeScript sem erros, páginas estáticas geradas.
+- `globals.css`: fonte Klean via @font-face + token amarelo escuro para hover.
+- Novo componente: `src/components/layout/Header.tsx` com logo Kärcher e assinatura "Kärcher Center Dikmaq".
+- `layout.tsx`: inclui Header.
+- `page.tsx` (home): hero com logo Kärcher + "Kärcher Center Dikmaq".
+- `QuestionCard.tsx` e `Quiz.tsx`: alinhados às cores da marca (amarelo #FFED00, tinta #161922) e assinatura Kärcher nas telas.

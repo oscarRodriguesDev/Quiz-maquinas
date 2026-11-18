@@ -1,8 +1,19 @@
 @import "tailwindcss";
 
+/* Fonte proprietária da Kärcher (Klean) — carregada localmente quando disponível.
+   Caso contrário, cai para Clan Pro (CDN) e depois stack de sistema geometrico. */
+@font-face {
+  font-family: "Klean";
+  src: local("Klean"), local("Klean-Regular");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme inline {
   --color-brand-ink: #161922;
   --color-brand-yellow: #FFED00;
+  --color-brand-yellow-dark: #E6DE00;
   --color-accent: #238C96;
   --color-surface: #FFFFFF;
   --color-surface-muted: #F0F1F3;
@@ -15,6 +26,7 @@
 @layer base {
   :root {
     --brand-yellow: #FFED00;
+    --brand-yellow-dark: #E6DE00;
     --brand-ink: #161922;
     --surface: #FFFFFF;
     --surface-muted: #F0F1F3;
@@ -26,8 +38,8 @@
 
     --background: var(--surface);
     --foreground: var(--brand-ink);
-    --font-clan: "Clan Pro", "Century Gothic", "Futura", "Segoe UI", Arial, sans-serif;
-    --font-sans: var(--font-clan);
+    --font-klean: "Klean", "Clan Pro", "Century Gothic", "Futura", "Segoe UI", Arial, sans-serif;
+    --font-sans: var(--font-klean);
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 
