@@ -52,4 +52,4 @@ Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/ap
 - Novo componente: `src/components/layout/Footer.tsx` baseado no site karcher-center-dikmaq.com.br (logo, redes sociais, institucional, atendimento, pagamentos, selos, rodapé com CNPJ).
 - `layout.tsx`: inclui Header e Footer.
 - `page.tsx` (home): hero com logo Kärcher + "Kärcher Center Dikmaq".
-- `QuestionCard.tsx` e `Quiz.tsx`: alinhados às cores da marca (amarelo #FFED00, tinta #161922) e assinatura Kärcher nas telas.
+- `QuestionCard.tsx` e `Quiz.tsx`: alinhados às cores da marca (amarelo #FFED00, tinta #161922) e assinatura Kärcher nas telas; CTAs renomeados para "Descobrir minha máquina"; botão "Continuar" oculto quando não há próxima pergunta.

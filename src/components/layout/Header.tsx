@@ -58,7 +58,7 @@ export default function Header() {
               href="/quiz"
               className="flex items-center justify-center gap-2 rounded-lg border border-brand-ink bg-brand-yellow px-5 py-2.5 text-brand-ink font-[800] text-sm uppercase tracking-tight transition-colors hover:bg-brand-yellow-dark focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-ink focus-visible:ring-opacity-25"
             >
-              Encontrar minha máquina
+              Descobrir minha máquina
               <svg
                 width="16"
                 height="16"

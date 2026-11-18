@@ -348,6 +348,11 @@ export default function Quiz() {
           }}
           canBack={displayIndex > 0}
           disabled={submitting}
+          hideContinue={
+            !flow?.steps.some(
+              (step, i) => i > displayIndex && !(step.questionId in answers)
+            )
+          }
         />
 
         {/* Botão de envio manual como fallback caso o fluxo automático não dispare */}
@@ -358,7 +363,7 @@ export default function Quiz() {
               disabled={submitting}
               className="w-full sm:w-auto rounded-lg border border-brand-ink bg-brand-yellow px-6 py-3 text-brand-ink font-[800] text-base uppercase tracking-tight transition-colors hover:bg-[#e6de00] disabled:opacity-50 disabled:pointer-events-none"
             >
-              Enviar resultado
+              Descobrir minha máquina
             </button>
             <p className="text-xs text-text-muted">
               Todas as respostas preenchidas. Clique para obter a indicação da máquina.
@@ -462,7 +467,7 @@ function ResultScreen({ answers, result, onRestart }: ResultScreenProps) {
             className="mt-6 rounded-lg border border-brand-ink bg-brand-yellow px-6 py-3 text-brand-ink font-[800] text-base transition-colors hover:bg-[#e6de00]"
             onClick={onRestart}
           >
-            Alterar respostas
+            Descobrir outra máquina
           </button>
         </div>
       ) : (
@@ -549,7 +554,7 @@ function ResultScreen({ answers, result, onRestart }: ResultScreenProps) {
               className="flex-1 rounded-lg border border-brand-ink bg-brand-yellow px-6 py-3 text-brand-ink font-[800] text-base transition-colors hover:bg-[#e6de00]"
               onClick={onRestart}
             >
-              Alterar respostas
+              Descobrir outra máquina
             </button>
             <button
               className="flex-1 rounded-lg border border-border bg-surface px-6 py-3 text-brand-ink font-[700] text-base transition-colors hover:bg-surface-muted"

@@ -9,6 +9,8 @@ interface QuestionCardProps {
   onBack: () => void;
   canBack: boolean;
   disabled?: boolean;
+  /** Oculta o botão Continuar quando não há próxima pergunta. */
+  hideContinue?: boolean;
 }
 
 export function QuestionCard({
@@ -20,6 +22,7 @@ export function QuestionCard({
   onBack,
   canBack,
   disabled,
+  hideContinue,
 }: QuestionCardProps) {
   return (
     <article className="flex flex-col gap-6">
@@ -89,14 +92,16 @@ export function QuestionCard({
         >
           ← Voltar
         </button>
-        <button
-          type="button"
-          disabled={!value || disabled}
-          onClick={() => onSelect(value!)}
-          className="rounded-lg border border-brand-ink bg-brand-yellow px-6 py-3 text-brand-ink font-[800] text-base uppercase tracking-tight transition-colors hover:bg-brand-yellow-dark disabled:opacity-50 disabled:pointer-events-none shadow-sm"
-        >
-          Continuar
-        </button>
+        {!hideContinue && (
+          <button
+            type="button"
+            disabled={!value || disabled}
+            onClick={() => onSelect(value!)}
+            className="rounded-lg border border-brand-ink bg-brand-yellow px-6 py-3 text-brand-ink font-[800] text-base uppercase tracking-tight transition-colors hover:bg-brand-yellow-dark disabled:opacity-50 disabled:pointer-events-none shadow-sm"
+          >
+            Continuar
+          </button>
+        )}
       </footer>
     </article>
   );
