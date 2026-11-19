@@ -62,3 +62,11 @@ Build de produção OK (`npm run build`): rotas `/`, `/quiz` (estáticas) e `/ap
 ### Correção de recomendação e layout
 - `src/lib/recommendations/engine.ts`: fallback garante que SEMPRE retorne pelo menos uma máquina; EXCLUDED_SUBTYPES evita peças/acessórios; voltagem "none" tratada como compatível.
 - `src/components/quiz/QuestionCard.tsx`: opções de resposta em coluna.
+
+## Sessão 19/11/2026 — apresentação dos resultados
+- Criado `src/components/results/ResultScreen.tsx` com máquina principal em destaque, foto ampliada (4:3, `object-contain`) e até 2 alternativas em grid.
+- Criado `src/components/results/ExpandableText.tsx` com "Ler mais"/"Ler menos" acessível; descrição recolhida por padrão.
+- `src/components/quiz/Quiz.tsx` agora importa `ResultScreen` de `components/results`.
+- Rótulos em português para situação comercial; resumo de respostas legível e recolhível; CTA único ao final.
+- Validação: `npx tsc --noEmit` OK; `npm run build` OK. `npm run lint` mantém erros/warnings pré-existentes (scripts/import-catalog.ts, Quiz.tsx useEffect, routes.d.ts) e warnings de `<img>`.
+- Pendência: acentos ausentes em `descriptionText` do catálogo (reimportar CSV original).

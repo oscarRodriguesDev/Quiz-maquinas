@@ -7,3 +7,4 @@
 | 3 | Corrigir travamento em "Preparando o quiz…" (quiz inicia com Q1) | c6ae344 |
 | 4 | Importar catálogo CSV e gerar catálogo interno | aa6f6a7 |
 | 5 | Corrigir Q4/Q5 sem opções (injeção por família) | 033cea2 |
+| 6 | Melhorar apresentação dos resultados: texto expansível e foto ampliada | pendente |

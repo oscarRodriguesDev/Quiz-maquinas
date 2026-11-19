@@ -72,3 +72,11 @@ Repositório Next.js 16 (App Router, TypeScript, Tailwind v4) vazio do create-ne
 - `src/lib/recommendations/engine.ts`: fallback de recomendação — quando não há candidatos elegíveis, relaxa critérios por família do objetivo e depois por qualquer máquina aprovada, garantindo que SEMPRE retorne pelo menos uma máquina (nunca "no-match"). Respeita EXCLUDED_SUBTYPES para não mostrar peças/acessórios.
 - `src/lib/recommendations/eligibility.ts`: trata voltagem "none" como compatível (assim como null), permitindo máquinas sem voltagem informada aparecerem (ex: Portátil).
 - `src/components/quiz/QuestionCard.tsx`: opções de resposta exibidas em coluna (flex-col) em vez de grid.
+
+### Melhoria da tela de resultado (19/11/2026)
+- Novo `src/components/results/ResultScreen.tsx`: card principal em destaque (foto grande à esquerda no desktop), alternativas em grid de 2, imagem com proporção 4:3 e `object-contain` (fim do corte e do tamanho reduzido), fallback "Imagem não disponível" via `onError`.
+- Novo `src/components/results/ExpandableText.tsx`: descrição longa recolhida em 4 linhas (principal) ou 3 linhas (alternativas), com botão acessível "Ler mais"/"Ler menos" (`aria-expanded`/`aria-controls`), sem remover o texto do DOM.
+- `src/components/quiz/Quiz.tsx`: removida a implementação inline de `ResultScreen`; agora importa o componente de `components/results`.
+- Resultado: "Situação: buyable" trocado por rótulos em português; resumo das respostas agora mostra títulos legíveis das perguntas e labels das opções (antes exibia chaves cruas como `goal/pressure`), dentro de um `<details>` recolhido.
+- Links de loja convertidos em `<a target="_blank" rel="noopener noreferrer">`; aviso "Confirme preço e disponibilidade na loja" ao final; botões duplicados ("Descobrir outra máquina" e "Refazer quiz", mesma ação) unificados em um.
+- Pendência de dados: ~111 das 121 máquinas têm acentos removidos em `descriptionText` (ex.: "Press o", "resist ncia") no `catalog.internal.json`. Corrigir exige reimportar o CSV original com decoding correto; não foi alterado nesta sessão.
