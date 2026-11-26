@@ -16,7 +16,7 @@ export function Progress({ total, answered }: ProgressProps) {
       </div>
       <div className="w-full rounded-full border border-border bg-surface-muted h-4">
         <div
-          className="h-full bg-brand-yellow"
+          className="h-full rounded-full bg-brand-yellow transition-[width] duration-300 ease-out"
           style={{ width: `${Math.min(share, 100)}%` }}
         />
       </div>

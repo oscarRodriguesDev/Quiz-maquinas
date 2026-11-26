@@ -13,6 +13,7 @@ import {
   getWorkloadOptions,
 } from "@/lib/quiz/questions";
 import { ExpandableText } from "./ExpandableText";
+import { ResponsiveBanner } from "@/components/ui/ResponsiveBanner";
 
 interface ResultScreenProps {
   answers: Record<string, string>;
@@ -20,8 +21,7 @@ interface ResultScreenProps {
   onRestart: () => void;
 }
 
-const KARCHER_LOGO_URL =
-  "https://mktkarcher.com.br/download/105/institucionais/1_lVImt0Itud1YA6owcH5VBFyjSULRZMj/LOGO%20KARCHER%20FUNDO%20TRANSPARENTE%20BAIXA.png";
+const STORE_URL = "https://www.karcher-center-dikmaq.com.br";
 
 const QUESTION_LABELS: Record<string, string> = {
   goal: "Objetivo",
@@ -244,10 +244,10 @@ function PrimaryCard({ item }: { item: RecommendationItem }) {
           </span>
 
           <div>
-            <h3 className="text-xl font-[900] leading-snug tracking-tight text-brand-ink sm:text-2xl">
+            <h2 className="text-xl font-[900] leading-snug tracking-tight text-brand-ink sm:text-2xl">
               {item.name}
               {item.model ? ` — ${item.model}` : ""}
-            </h3>
+            </h2>
             <p className="mt-1 text-sm text-text-muted">
               {item.brand}
               {item.productId ? ` • Referência ${item.productId}` : ""}
@@ -363,23 +363,14 @@ export function ResultScreen({ answers, result, onRestart }: ResultScreenProps) 
   return (
     <section className="flex flex-1 w-full flex-col bg-white p-6 sm:p-8">
       <div className="mx-auto w-full max-w-6xl">
-        <div className="mb-6 flex items-center gap-2">
-          <img
-            src={KARCHER_LOGO_URL}
-            alt="Kärcher"
-            width="88"
-            height="30"
-            className="h-7 w-auto object-contain"
-            loading="lazy"
-          />
-          <span className="font-klean font-[800] text-xs uppercase tracking-tight text-brand-ink sm:text-sm">
-            Kärcher Center Dikmaq
-          </span>
+        <div className="mb-6">
+          <p className="text-[11px] font-[800] uppercase tracking-[0.2em] text-accent">
+            Resultado do quiz
+          </p>
+          <h1 className="mt-1 text-[30px] font-[900] tracking-[-1px] text-brand-ink sm:text-[40px]">
+            Resultado da sua busca
+          </h1>
         </div>
-
-        <h2 className="text-[30px] font-[900] tracking-[-1px] text-brand-ink sm:text-[40px]">
-          Resultado da sua busca
-        </h2>
 
         {!hasItems ? (
           <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-6">
@@ -418,9 +409,9 @@ export function ResultScreen({ answers, result, onRestart }: ResultScreenProps) 
 
             {alternatives.length > 0 && (
               <div>
-                <h3 className="mb-3 text-sm font-[800] uppercase tracking-wider text-text-muted">
+                <h2 className="mb-3 text-sm font-[800] uppercase tracking-wider text-text-muted">
                   Outras opções compatíveis
-                </h3>
+                </h2>
                 <div className="grid gap-6 sm:grid-cols-2">
                   {alternatives.map((item) => (
                     <AlternativeCard key={item.productId} item={item} />
@@ -445,6 +436,23 @@ export function ResultScreen({ answers, result, onRestart }: ResultScreenProps) 
             </div>
           </div>
         )}
+
+        <div className="mt-10">
+          <a
+            href={STORE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block overflow-hidden rounded-xl border border-border transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-ink focus-visible:ring-opacity-25"
+            aria-label="Conheça as soluções Kärcher na loja (abre em nova aba)"
+          >
+            <ResponsiveBanner
+              desktopSrc="/images/banner-horizontal2.webp"
+              mobileSrc="/images/banner-mobile4.webp"
+              alt="Soluções Kärcher para deixar a rotina de limpeza mais prática"
+              className="aspect-[425/495] md:aspect-[10/3]"
+            />
+          </a>
+        </div>
       </div>
     </section>
   );

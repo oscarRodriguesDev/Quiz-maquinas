@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { QuestionCard } from "./QuestionCard";
 import { Progress } from "./Progress";
 import { ResultScreen } from "@/components/results/ResultScreen";
+import { ResponsiveBanner } from "@/components/ui/ResponsiveBanner";
 import type { Family } from "@/types/catalog";
 import type { Question, QuestionId } from "@/lib/quiz/questions";
 import {
@@ -29,6 +30,9 @@ const validFamilies: Family[] = [
   "drain",
   "pet",
 ];
+
+const PORTABLE_STORE_URL =
+  "https://www.karcher-center-dikmaq.com.br/lavadoras-de-alta-pressao-portatil-karcher";
 
 export default function Quiz() {
   const [stage, setStage] = useState<"questions" | "result">("questions");
@@ -312,65 +316,113 @@ export default function Quiz() {
   }
 
   return (
-    <section className="flex flex-1 w-full flex-col bg-white">
-      <div className="flex-1 w-full overflow-y-auto p-6 sm:p-8" ref={scrollRef}>
-        <div className="flex items-center justify-between mb-6">
-          <div className="inline-flex items-center gap-2">
-            <img
-              src="https://mktkarcher.com.br/download/105/institucionais/1_lVImt0Itud1YA6owcH5VBFyjSULRZMj/LOGO%20KARCHER%20FUNDO%20TRANSPARENTE%20BAIXA.png"
-              alt="Kärcher"
-              width="72"
-              height="24"
-              className="h-5 w-auto object-contain"
-              loading="lazy"
-            />
-            <span className="font-klean font-[800] text-brand-ink text-xs sm:text-sm uppercase tracking-tight">
-              Kärcher Center Dikmaq
-            </span>
-          </div>
-        </div>
-        {error && (
-          <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 text-sm">
-            {error}
-          </div>
-        )}
-        <Progress total={progress.total} answered={progress.answered} />
-        <QuestionCard
-          key={`${currentQuestion.id}-${displayIndex}`}
-          question={currentQuestion}
-          step={progress.current}
-          total={progress.total}
-          value={answers[currentQuestion.id]}
-          onSelect={selectAnswer}
-          onBack={() => {
-            if (displayIndex > 0) {
-              goToStep(displayIndex - 1);
-            }
-          }}
-          canBack={displayIndex > 0}
-          disabled={submitting}
-          hideContinue={
-            !flow?.steps.some(
-              (step, i) => i > displayIndex && !(step.questionId in answers)
-            )
-          }
-        />
+    <section className="flex-1 w-full bg-surface">
+      <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
+        <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12">
+          <div ref={scrollRef} className="min-w-0 scroll-mt-6">
+            <div className="mb-6">
+              <p className="text-[11px] font-[800] uppercase tracking-[0.2em] text-accent">
+                Quiz de máquinas
+              </p>
+              <h1 className="mt-1 text-2xl font-[900] tracking-[-0.5px] text-brand-ink sm:text-3xl">
+                Encontre a sua máquina
+              </h1>
+            </div>
 
-        {/* Botão de envio manual como fallback caso o fluxo automático não dispare */}
-        {showManualSubmit && !submitting && stage === "questions" && (
-          <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            <button
-              onClick={handleManualSubmit}
-              disabled={submitting}
-              className="w-full sm:w-auto rounded-lg border border-brand-ink bg-brand-yellow px-6 py-3 text-brand-ink font-[800] text-base uppercase tracking-tight transition-colors hover:bg-[#e6de00] disabled:opacity-50 disabled:pointer-events-none"
-            >
-              Descobrir minha máquina
-            </button>
-            <p className="text-xs text-text-muted">
-              Todas as respostas preenchidas. Clique para obter a indicação da máquina.
-            </p>
+            {error && (
+              <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800 text-sm">
+                {error}
+              </div>
+            )}
+
+            <Progress total={progress.total} answered={progress.answered} />
+
+            <div className="mt-8">
+              <QuestionCard
+                key={`${currentQuestion.id}-${displayIndex}`}
+                question={currentQuestion}
+                step={progress.current}
+                total={progress.total}
+                value={answers[currentQuestion.id]}
+                onSelect={selectAnswer}
+                onBack={() => {
+                  if (displayIndex > 0) {
+                    goToStep(displayIndex - 1);
+                  }
+                }}
+                canBack={displayIndex > 0}
+                disabled={submitting}
+                hideContinue={
+                  !flow?.steps.some(
+                    (step, i) => i > displayIndex && !(step.questionId in answers)
+                  )
+                }
+              />
+            </div>
+
+            {/* Botão de envio manual como fallback caso o fluxo automático não dispare */}
+            {showManualSubmit && !submitting && stage === "questions" && (
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <button
+                  onClick={handleManualSubmit}
+                  disabled={submitting}
+                  className="w-full rounded-lg border border-brand-ink bg-brand-yellow px-6 py-3 text-base font-[800] uppercase tracking-tight text-brand-ink transition-colors hover:bg-[#e6de00] disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
+                >
+                  Descobrir minha máquina
+                </button>
+                <p className="text-xs text-text-muted">
+                  Todas as respostas preenchidas. Clique para obter a indicação da máquina.
+                </p>
+              </div>
+            )}
           </div>
-        )}
+
+          <aside className="hidden lg:sticky lg:top-6 lg:block">
+            <a
+              href={PORTABLE_STORE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-ink focus-visible:ring-offset-4"
+              aria-label="Conhecer a lavadora de alta pressão portátil Kärcher na loja (abre em nova aba)"
+            >
+              <ResponsiveBanner
+                desktopSrc="/images/banner-mobile1.webp"
+                mobileSrc="/images/banner-mobile1.webp"
+                alt="Lavadora de alta pressão portátil Kärcher em uso"
+                className="aspect-[425/495] rounded-xl border border-border shadow-sm transition-opacity hover:opacity-95"
+              />
+            </a>
+
+            <div className="mt-4 rounded-xl border border-border-soft bg-surface-muted p-5">
+              <h2 className="text-[11px] font-[800] uppercase tracking-wider text-text-muted">
+                Enquanto você responde
+              </h2>
+              <ul className="mt-3 space-y-2.5 text-sm text-brand-ink">
+                <li className="flex items-start gap-2">
+                  <span
+                    aria-hidden="true"
+                    className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+                  />
+                  Uma pergunta por tela, no seu ritmo
+                </li>
+                <li className="flex items-start gap-2">
+                  <span
+                    aria-hidden="true"
+                    className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+                  />
+                  Você pode voltar e ajustar as respostas
+                </li>
+                <li className="flex items-start gap-2">
+                  <span
+                    aria-hidden="true"
+                    className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+                  />
+                  Sem cadastro e sem compromisso
+                </li>
+              </ul>
+            </div>
+          </aside>
+        </div>
       </div>
     </section>
   );

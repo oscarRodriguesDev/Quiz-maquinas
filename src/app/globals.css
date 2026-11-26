@@ -54,4 +54,25 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  .animate-hero-fade {
+    animation: hero-fade 450ms ease-out both;
+  }
+}
+
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+    transform: scale(1.01);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-fade {
+    animation: none;
+  }
 }
