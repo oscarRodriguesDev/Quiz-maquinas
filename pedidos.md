@@ -8,3 +8,4 @@
 | 4 | Importar catálogo CSV e gerar catálogo interno | aa6f6a7 |
 | 5 | Corrigir Q4/Q5 sem opções (injeção por família) | 033cea2 |
 | 6 | Melhorar apresentação dos resultados: texto expansível e foto ampliada | pendente |
+| 7 | Adicionar link de volta para a loja no header e abrir links da loja na mesma aba | d229c4d |
