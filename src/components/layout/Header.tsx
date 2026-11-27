@@ -8,6 +8,8 @@ import { useState } from "react";
 const KARCHER_LOGO_URL =
   "https://mktkarcher.com.br/download/105/institucionais/1_lVImt0Itud1YA6owcH5VBFyjSULRZMj/LOGO%20KARCHER%20FUNDO%20TRANSPARENTE%20BAIXA.png";
 
+const STORE_URL = "https://www.karcher-center-dikmaq.com.br";
+
 const navLinks = [
   { href: "/", label: "Início" },
   { href: "/quiz", label: "Quiz de máquinas" },
@@ -54,6 +56,27 @@ export default function Header() {
                 {link.label}
               </Link>
             ))}
+            <a
+              href={STORE_URL}
+              className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-base text-text-secondary transition-colors hover:bg-surface-muted hover:text-brand-ink"
+              aria-label="Voltar para a loja Kärcher Center Dikmaq"
+            >
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M19 12H5" />
+                <path d="m12 19-7-7 7-7" />
+              </svg>
+              Loja
+            </a>
           </nav>
 
           <div className="hidden md:flex items-center gap-3">
@@ -146,6 +169,28 @@ export default function Header() {
               >
                 Descobrir minha máquina
               </Link>
+              <a
+                href={STORE_URL}
+                onClick={() => setOpenMenuPath(null)}
+                className="flex items-center gap-2 rounded-lg px-3 py-3 text-sm font-[700] uppercase tracking-tight text-text-secondary transition-colors hover:bg-surface-muted hover:text-brand-ink"
+                aria-label="Voltar para a loja Kärcher Center Dikmaq"
+              >
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M19 12H5" />
+                  <path d="m12 19-7-7 7-7" />
+                </svg>
+                Voltar para a loja
+              </a>
             </nav>
           </div>
         )}

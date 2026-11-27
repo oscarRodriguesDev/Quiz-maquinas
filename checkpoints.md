@@ -1,3 +1,18 @@
+# Checkpoint — estado final da sessão (27/11/2026)
+Autoria: VIBECODE
+
+## Estado
+`npm run build` OK (Next.js 16.4.6): rotas `/` e `/quiz` estáticas, `/api/recommendations` dinâmica. TypeScript sem erros.
+
+## Entregue nesta sessão
+- Header com link "Loja" no desktop e "Voltar para a loja" no menu mobile, apontando para a loja Karcher Center Dikmaq na mesma aba.
+- Links da loja de home, quiz e resultado passaram a abrir na mesma aba (sem `target="_blank"`); `aria-label` atualizados.
+
+## Pendências
+- Mesmas pendências anteriores (revisão de dados/descrições do catálogo, testes automatizados, deploy).
+
+---
+
 # Checkpoint — estado final da sessão (14/11/2026)
 Autoria: VIBECODE
 

@@ -91,10 +91,8 @@ export function HeroCarousel() {
         <a
           key={index}
           href={slide.href}
-          target="_blank"
-          rel="noopener noreferrer"
           className="block animate-hero-fade focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-ink focus-visible:ring-inset"
-          aria-label={`${slide.alt} (abre em nova aba)`}
+          aria-label={slide.alt}
         >
           <ResponsiveBanner
             desktopSrc={slide.desktopSrc}

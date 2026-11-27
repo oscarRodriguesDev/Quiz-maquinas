@@ -209,10 +209,8 @@ export default function Home() {
             />
             <a
               href={PORTABLE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
               className="block rounded-2xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-ink focus-visible:ring-offset-4"
-              aria-label="Conhecer a lavadora de alta pressão portátil Kärcher na loja (abre em nova aba)"
+              aria-label="Conhecer a lavadora de alta pressão portátil Kärcher na loja"
             >
               <ResponsiveBanner
                 desktopSrc="/images/banner-mobile1.webp"
@@ -294,10 +292,8 @@ export default function Home() {
             <a
               key={category.title}
               href={category.href}
-              target="_blank"
-              rel="noopener noreferrer"
               className="group flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-colors hover:border-brand-ink focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-ink focus-visible:ring-opacity-25"
-              aria-label={`${category.title} na loja (abre em nova aba)`}
+              aria-label={`${category.title} na loja`}
             >
               <div className="relative aspect-[4/3] overflow-hidden border-b border-border-soft bg-surface-muted p-5">
                 <img

@@ -380,10 +380,8 @@ export default function Quiz() {
           <aside className="hidden lg:sticky lg:top-6 lg:block">
             <a
               href={PORTABLE_STORE_URL}
-              target="_blank"
-              rel="noopener noreferrer"
               className="block rounded-xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-ink focus-visible:ring-offset-4"
-              aria-label="Conhecer a lavadora de alta pressão portátil Kärcher na loja (abre em nova aba)"
+              aria-label="Conhecer a lavadora de alta pressão portátil Kärcher na loja"
             >
               <ResponsiveBanner
                 desktopSrc="/images/banner-mobile1.webp"

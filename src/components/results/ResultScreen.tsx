@@ -130,8 +130,6 @@ function PrimaryButton({ href, children }: { href: string; children: ReactNode }
   return (
     <a
       href={href}
-      target="_blank"
-      rel="noopener noreferrer"
       className="inline-flex items-center justify-center gap-2 rounded-lg border border-brand-ink bg-brand-yellow px-5 py-3 text-brand-ink font-[800] text-sm uppercase tracking-tight transition-colors hover:bg-brand-yellow-dark focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-ink focus-visible:ring-opacity-25"
     >
       {children}
@@ -440,10 +438,8 @@ export function ResultScreen({ answers, result, onRestart }: ResultScreenProps) 
         <div className="mt-10">
           <a
             href={STORE_URL}
-            target="_blank"
-            rel="noopener noreferrer"
             className="block overflow-hidden rounded-xl border border-border transition-opacity hover:opacity-95 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-ink focus-visible:ring-opacity-25"
-            aria-label="Conheça as soluções Kärcher na loja (abre em nova aba)"
+            aria-label="Conheça as soluções Kärcher na loja"
           >
             <ResponsiveBanner
               desktopSrc="/images/banner-horizontal2.webp"

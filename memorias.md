@@ -80,3 +80,8 @@ Repositório Next.js 16 (App Router, TypeScript, Tailwind v4) vazio do create-ne
 - Resultado: "Situação: buyable" trocado por rótulos em português; resumo das respostas agora mostra títulos legíveis das perguntas e labels das opções (antes exibia chaves cruas como `goal/pressure`), dentro de um `<details>` recolhido.
 - Links de loja convertidos em `<a target="_blank" rel="noopener noreferrer">`; aviso "Confirme preço e disponibilidade na loja" ao final; botões duplicados ("Descobrir outra máquina" e "Refazer quiz", mesma ação) unificados em um.
 - Pendência de dados: ~111 das 121 máquinas têm acentos removidos em `descriptionText` (ex.: "Press o", "resist ncia") no `catalog.internal.json`. Corrigir exige reimportar o CSV original com decoding correto; não foi alterado nesta sessão.
+
+### Menu do header e links da loja (27/11/2026)
+- `src/components/layout/Header.tsx`: adicionado link "Loja" na navegação desktop (com seta para a esquerda) e "Voltar para a loja" no menu mobile, apontando para `https://www.karcher-center-dikmaq.com.br` na mesma aba.
+- Removido `target="_blank"`/`rel="noopener noreferrer"` de todos os links da loja e ajustados os `aria-label` que anunciavam "abre em nova aba": `HeroCarousel`, `ResultScreen` (botão principal e banner), `Quiz` (banner lateral) e `app/page.tsx` (banner e categorias).
+- Links de redes sociais do `Footer` mantidos em nova aba (não são links da loja).
