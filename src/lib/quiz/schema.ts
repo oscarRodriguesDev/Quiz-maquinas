@@ -1,5 +1,10 @@
 import type { Family, QuizAnswers } from "../../types/catalog";
 import type { QuestionId } from "./questions";
+import {
+  getPriorityOptions,
+  getSurfaceOptions,
+  getWorkloadOptions,
+} from "./questions";
 
 export const BUDGET_IDS: Record<string, number> = {
   "500": 50000,
@@ -79,6 +84,9 @@ export function validateAnswers(raw: unknown): ValidationResult {
   if (!validFamilies.includes(goal as Family)) {
     errors.push({ path: "goal", message: "Objetivo inválido." });
   }
+  const goalFamily = validFamilies.includes(goal as Family)
+    ? (goal as Family)
+    : null;
 
   const context = obj.context;
   if (
@@ -98,18 +106,43 @@ export function validateAnswers(raw: unknown): ValidationResult {
 
   if (typeof obj.surface !== "string" || obj.surface.length === 0) {
     errors.push({ path: "surface", message: "Superfície é obrigatória." });
+  } else if (
+    goalFamily &&
+    !getSurfaceOptions(goalFamily).some((option) => option.id === obj.surface)
+  ) {
+    errors.push({
+      path: "surface",
+      message: "Superfície incompatível com o objetivo informado.",
+    });
   }
 
   if (typeof obj.workload !== "string" || obj.workload.length === 0) {
     errors.push({ path: "workload", message: "Carga de trabalho é obrigatória." });
+  } else if (
+    goalFamily &&
+    !getWorkloadOptions(goalFamily).some((option) => option.id === obj.workload)
+  ) {
+    errors.push({
+      path: "workload",
+      message: "Carga de trabalho incompatível com o objetivo informado.",
+    });
   }
 
   if (!POWER_MODES.includes(obj.power as string)) {
     errors.push({ path: "power", message: "Alimentação inválida." });
   }
 
-  if (typeof obj.priority !== "string" || !PRIORITIES.includes(obj.priority)) {
-    errors.push({ path: "priority", message: "Prioridade inválida." });
+  const allowedPriorities = goalFamily
+    ? getPriorityOptions(goalFamily).map((option) => option.id)
+    : PRIORITIES;
+  if (
+    typeof obj.priority !== "string" ||
+    !allowedPriorities.includes(obj.priority)
+  ) {
+    errors.push({
+      path: "priority",
+      message: "Prioridade inválida para o objetivo informado.",
+    });
   }
 
   let budget: number | "open" = "open";

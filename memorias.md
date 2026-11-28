@@ -81,6 +81,17 @@ Repositório Next.js 16 (App Router, TypeScript, Tailwind v4) vazio do create-ne
 - Links de loja convertidos em `<a target="_blank" rel="noopener noreferrer">`; aviso "Confirme preço e disponibilidade na loja" ao final; botões duplicados ("Descobrir outra máquina" e "Refazer quiz", mesma ação) unificados em um.
 - Pendência de dados: ~111 das 121 máquinas têm acentos removidos em `descriptionText` (ex.: "Press o", "resist ncia") no `catalog.internal.json`. Corrigir exige reimportar o CSV original com decoding correto; não foi alterado nesta sessão.
 
+### Perguntas condicionadas às respostas anteriores (28/11/2026)
+- Causa raiz do bug "respondi sobre lavadora e apareceram opções de aspirador": ao responder Q1, `selectAnswer` chamava `goToStep`, mas `goToStep` retornava cedo porque `flow` ainda era `null` (a família não existia na renderização anterior). O quiz permanecia na Q1, agora com progresso "1 de 10" e todas as opções de família (inclusive aspiradores). Ao escolher uma opção de aspirador, o resultado final virava aspirador.
+- `src/components/quiz/Quiz.tsx`: `goToStep` agora aceita o tamanho do novo fluxo e não retorna mais quando `flow` ainda é nulo; Q1 avança para a primeira pergunta não respondida.
+- `src/lib/quiz/questions.ts`: Q7 (priority) ganhou opções por família via `getPriorityOptions`: `automation` apenas em `vacuum`; `cordless` em `vacuum`, `floor`, `sweep` e `pet` (onde o catálogo tem versões a bateria). Novo `getQuestion(id, family, answers)` resolve Q4/Q5/Q7/Q9/Q10 conforme a família e as respostas anteriores.
+- `src/components/quiz/Quiz.tsx`: Q9/Q10 agora são renderizadas de fato (antes `questionById` não as encontrava e a tela caía em "Preparando o quiz…"). O envio automático que pulava Q9/Q10 foi removido; o resultado é enviado quando o caminho vigente termina.
+- `src/components/quiz/Quiz.tsx`: verificações que saem do caminho (ex.: Q10 de automação quando Q7 muda para "automação") são removidas das respostas.
+- `src/lib/quiz/schema.ts`: valida `surface`, `workload` e `priority` contra as opções da família escolhida em Q1; combinações inconsistentes retornam 400.
+- `src/lib/recommendations/engine.ts`: o fallback de recomendação não troca mais de família. Sem máquina da família, retorna `no-match` (ex.: drain/pet sem máquina no catálogo) em vez de recomendar aspirador/lavadora de outra rota.
+- `src/components/results/ResultScreen.tsx`: o resumo das respostas usa os rótulos de Q7 por família.
+- Validação: `npx tsc --noEmit` OK; `npm run build` OK; API testada: pressure → lavadoras, vacuum → aspiradores, drain/pet → `no-match`, combinações inconsistentes → 400.
+
 ### Menu do header e links da loja (27/11/2026)
 - `src/components/layout/Header.tsx`: adicionado link "Loja" na navegação desktop (com seta para a esquerda) e "Voltar para a loja" no menu mobile, apontando para `https://www.karcher-center-dikmaq.com.br` na mesma aba.
 - Removido `target="_blank"`/`rel="noopener noreferrer"` de todos os links da loja e ajustados os `aria-label` que anunciavam "abre em nova aba": `HeroCarousel`, `ResultScreen` (botão principal e banner), `Quiz` (banner lateral) e `app/page.tsx` (banner e categorias).

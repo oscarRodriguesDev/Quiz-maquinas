@@ -52,13 +52,10 @@ export function recommend(
   const eligible = filterEligible(machines, answers);
 
   // Fallback: quando não há candidatos elegíveis após os filtros obrigatórios,
-  // relaxar os critérios para garantir que SEMPRE retorne pelo menos uma máquina.
-  // O usuário quer que qualquer combinação resulte em uma indicação.
+  // relaxar energia, orçamento e demais requisitos, mas NUNCA trocar de família.
+  // Assim, quem respondeu sobre lavadora não recebe aspirador como resultado.
   let candidates: EligibleCandidate[] = eligible;
-  let usedFallback = false;
   if (candidates.length === 0) {
-    usedFallback = true;
-    // Tentar apenas pela família do objetivo (relaxar energia, orçamento, etc.)
     const familyMachines = machines.filter(
       (m) =>
         m.quizStatus === "approved" &&
@@ -74,29 +71,12 @@ export function recommend(
       variant: null,
       issues: [],
     }));
-    // Se ainda nada, retornar as máquinas aprovadas de qualquer família.
-    if (candidates.length === 0) {
-      const anyMachines = machines.filter(
-        (m) =>
-          m.quizStatus === "approved" &&
-          m.isCompleteMachine &&
-          !EXCLUDED_SUBTYPES.has(m.subtype) &&
-          m.commercial.visible &&
-          m.commercial.enabled &&
-          m.commercial.state !== "hidden",
-      );
-      candidates = anyMachines.map((m) => ({
-        machine: m,
-        variant: null,
-        issues: [],
-      }));
-    }
   }
 
   const scored = scoreCandidates(candidates, answers);
   const ranked = rankCandidates(scored);
 
-  const status = usedFallback && ranked.length === 0 ? "no-match" : statusFor(ranked);
+  const status = statusFor(ranked);
 
   const recommendations = ranked.slice(0, 3).map((candidate) => {
     const { machine, variant } = candidate;

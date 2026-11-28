@@ -130,6 +130,39 @@ const workloadOptions: Record<Family, QuestionOption[]> = {
   ],
 };
 
+/**
+ * Q7 (priority): a especificação exige mostrar apenas opções que podem existir
+ * na família escolhida em Q1. Automação só faz sentido na rota de aspiradores;
+ * "sem cabo" só onde o catálogo tem versões a bateria.
+ */
+const basePriorityOptions: QuestionOption[] = [
+  { id: "economy", label: "Menor investimento entre as opções adequadas" },
+  { id: "mobility", label: "Facilidade de transportar e guardar" },
+  { id: "capacity", label: "Menos interrupções durante a rotina" },
+  { id: "quiet", label: "Menor ruído, quando houver dados comparáveis" },
+];
+
+const automationPriorityOption: QuestionOption = {
+  id: "automation",
+  label: "Limpeza automática, disponível na rota de aspiradores",
+};
+
+const cordlessPriorityOption: QuestionOption = {
+  id: "cordless",
+  label: "Liberdade para trabalhar sem cabo, quando aplicável",
+};
+
+const priorityOptions: Record<Family, QuestionOption[]> = {
+  pressure: [...basePriorityOptions],
+  extraction: [...basePriorityOptions],
+  vacuum: [...basePriorityOptions, automationPriorityOption, cordlessPriorityOption],
+  steam: [...basePriorityOptions],
+  floor: [...basePriorityOptions, cordlessPriorityOption],
+  sweep: [...basePriorityOptions, cordlessPriorityOption],
+  drain: [...basePriorityOptions],
+  pet: [...basePriorityOptions, cordlessPriorityOption],
+};
+
 export const QUESTIONS: Question[] = [
   {
     id: "goal",
@@ -282,23 +315,7 @@ export const QUESTIONS: Question[] = [
       "drain",
       "pet",
     ],
-    options: [
-      {
-        id: "economy",
-        label: "Menor investimento entre as opções adequadas",
-      },
-      { id: "mobility", label: "Facilidade de transportar e guardar" },
-      {
-        id: "capacity",
-        label: "Menos interrupções durante a rotina",
-      },
-      { id: "quiet", label: "Menor ruído, quando houver dados comparáveis" },
-      {
-        id: "automation",
-        label: "Limpeza automática, disponível na rota de aspiradores",
-      },
-      { id: "cordless", label: "Liberdade para trabalhar sem cabo, quando aplicável" },
-    ],
+    options: [],
   },
   {
     id: "budget",
@@ -334,6 +351,10 @@ export function getSurfaceOptions(family: Family): QuestionOption[] {
 
 export function getWorkloadOptions(family: Family): QuestionOption[] {
   return workloadOptions[family] ?? [];
+}
+
+export function getPriorityOptions(family: Family): QuestionOption[] {
+  return priorityOptions[family] ?? [...basePriorityOptions];
 }
 
 export interface CheckQuestion {
@@ -532,4 +553,44 @@ export function getCheckQuestions(
   }
 
   return result;
+}
+
+/**
+ * Resolve uma pergunta pelo id considerando a família e as respostas já dadas.
+ * Isso garante que Q4, Q5, Q7 e as verificações Q9/Q10 sempre reflitam Q1 e as
+ * respostas anteriores, em vez de usar opções fixas.
+ */
+export function getQuestion(
+  questionId: QuestionId,
+  family: Family | null,
+  answers: Record<string, string>,
+): Question | undefined {
+  if (questionId === "check-q9" || questionId === "check-q10") {
+    if (!family) return undefined;
+    const check = getCheckQuestions(family, answers).find(
+      (item) => item.id === questionId,
+    );
+    if (!check) return undefined;
+    return {
+      id: check.id,
+      title: check.title,
+      options: check.options,
+      families: [family],
+    };
+  }
+
+  const question = QUESTIONS.find((item) => item.id === questionId);
+  if (!question) return undefined;
+  if (!family) return question;
+
+  if (question.id === "surface") {
+    return { ...question, options: getSurfaceOptions(family) };
+  }
+  if (question.id === "workload") {
+    return { ...question, options: getWorkloadOptions(family) };
+  }
+  if (question.id === "priority") {
+    return { ...question, options: getPriorityOptions(family) };
+  }
+  return question;
 }

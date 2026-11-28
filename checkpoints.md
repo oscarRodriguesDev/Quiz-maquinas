@@ -1,3 +1,25 @@
+# Checkpoint — estado final da sessão (28/11/2026)
+Autoria: VIBECODE
+
+## Estado
+`npx tsc --noEmit` OK; `npm run build` OK (Next.js 16.4.6): `/` e `/quiz` estáticas, `/api/recommendations` dinâmica. Lint mantém apenas erros/warnings pré-existentes (`scripts/import-catalog.ts`, `src/types/routes.d.ts` e avisos de `<img>`).
+
+## Entregue nesta sessão
+- Corrigido o avanço da Q1: após escolher a tarefa, o quiz avança para a próxima pergunta em vez de permanecer na Q1 com todas as opções de família (causa do bug "lavadora → opções de aspirador").
+- Q7 (priority) agora exibe apenas opções válidas para a família escolhida: `automation` só em `vacuum`; `cordless` em `vacuum`, `floor`, `sweep` e `pet`.
+- Q4, Q5, Q7, Q9 e Q10 são resolvidas por `getQuestion(id, family, answers)`, sempre a partir de Q1 e das respostas anteriores.
+- Q9/Q10 passaram a ser exibidas; o envio do resultado ocorre ao final do caminho vigente (não pula mais as verificações).
+- Verificações que saem do caminho são removidas das respostas.
+- Validação do servidor rejeita `surface`, `workload` e `priority` incompatíveis com a família (400).
+- Fallback de recomendação nunca troca de família: sem máquina da família, retorna `no-match`.
+
+## Pendências
+- Revisão de dados/descrições do catálogo (evidências `contexts`, `applications`, `dutyProfile`, `workloadBands`, `priorityTags` continuam `pending`; pontuação de prioridade/rotina fica neutra).
+- Testes automatizados (nenhum runner configurado).
+- Deploy/validação na Vercel.
+
+---
+
 # Checkpoint — estado final da sessão (27/11/2026)
 Autoria: VIBECODE
 

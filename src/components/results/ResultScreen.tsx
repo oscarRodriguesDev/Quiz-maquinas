@@ -9,6 +9,7 @@ import type {
 import {
   QUESTIONS,
   getCheckQuestions,
+  getPriorityOptions,
   getSurfaceOptions,
   getWorkloadOptions,
 } from "@/lib/quiz/questions";
@@ -61,6 +62,9 @@ function buildOptionLabels(family: Family | null, answers: Record<string, string
     }
     for (const option of getWorkloadOptions(family)) {
       labels.set(`workload:${option.id}`, option.label);
+    }
+    for (const option of getPriorityOptions(family)) {
+      labels.set(`priority:${option.id}`, option.label);
     }
     for (const check of getCheckQuestions(family, answers)) {
       for (const option of check.options) {

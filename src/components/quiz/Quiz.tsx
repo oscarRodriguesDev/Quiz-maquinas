@@ -1,21 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { QuestionCard } from "./QuestionCard";
 import { Progress } from "./Progress";
 import { ResultScreen } from "@/components/results/ResultScreen";
 import { ResponsiveBanner } from "@/components/ui/ResponsiveBanner";
 import type { Family } from "@/types/catalog";
 import type { Question, QuestionId } from "@/lib/quiz/questions";
-import {
-  buildFlow,
-  clearsOnChange,
-  questionById,
-} from "@/lib/quiz/flow";
-import {
-  getSurfaceOptions,
-  getWorkloadOptions,
-} from "@/lib/quiz/questions";
+import { buildFlow, clearsOnChange } from "@/lib/quiz/flow";
+import { getQuestion } from "@/lib/quiz/questions";
 import { validateAnswers } from "@/lib/quiz/schema";
 
 const GOAL_QUESTION_ID: QuestionId = "goal";
@@ -58,32 +51,25 @@ export default function Quiz() {
   const maxIndex = flow ? flow.steps.length - 1 : 0;
   const displayIndex = Math.min(stepIndex, maxIndex);
 
-  const baseQuestion: Question | undefined = useMemo(() => {
+  // A pergunta exibida é resolvida a partir da família (Q1) e das respostas
+  // anteriores. Q4, Q5, Q7 e Q9/Q10 mudam de conteúdo conforme o caminho.
+  const currentQuestion: Question | undefined = useMemo(() => {
     if (!family) {
       // Família ainda não definida: mostrar apenas Q1 (objetivo).
-      return questionById(GOAL_QUESTION_ID);
+      return getQuestion(GOAL_QUESTION_ID, null, answers);
     }
     if (!flow) return undefined;
-    return questionById(flow.steps[displayIndex].questionId as QuestionId);
-  }, [family, flow, displayIndex]);
-
-  // Q4 (surface) e Q5 (workload) exibem opções específicas por família.
-  const currentQuestion: Question | undefined = useMemo(() => {
-    if (!baseQuestion) return undefined;
-    if (!family) return baseQuestion;
-    if (baseQuestion.id === "surface") {
-      return { ...baseQuestion, options: getSurfaceOptions(family) };
-    }
-    if (baseQuestion.id === "workload") {
-      return { ...baseQuestion, options: getWorkloadOptions(family) };
-    }
-    return baseQuestion;
-  }, [baseQuestion, family]);
+    return getQuestion(
+      flow.steps[displayIndex].questionId as QuestionId,
+      family,
+      answers,
+    );
+  }, [family, flow, displayIndex, answers]);
 
   const goToStep = useCallback(
-    (index: number) => {
-      if (!flow) return;
-      const clamped = Math.max(0, Math.min(index, flow.steps.length - 1));
+    (index: number, stepsLength?: number) => {
+      const total = stepsLength ?? flow?.steps.length ?? 1;
+      const clamped = Math.max(0, Math.min(index, Math.max(0, total - 1)));
       setStepIndex(clamped);
       setError(null);
       scrollRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -200,6 +186,23 @@ export default function Quiz() {
         delete nextAnswers[clearId];
       }
 
+      // Remove verificações que deixaram de existir no caminho atual
+      // (ex.: Q10 de automação quando Q7 muda para "automação").
+      const familyForFlow = !family && value ? (value as Family) : family;
+      if (familyForFlow) {
+        const activeCheckIds = buildFlow(familyForFlow, nextAnswers).steps
+          .map((step) => step.questionId)
+          .filter((id) => id.startsWith("check-"));
+        for (const key of Object.keys(nextAnswers)) {
+          if (
+            key.startsWith("check-") &&
+            !activeCheckIds.includes(key as QuestionId)
+          ) {
+            delete nextAnswers[key];
+          }
+        }
+      }
+
       setAnswers(nextAnswers);
 
       // Se a família acabou de ser escolhida (Q1), o fluxo agora existe.
@@ -214,7 +217,10 @@ export default function Quiz() {
           unanswered: unanswered?.questionId,
         });
         if (unanswered) {
-          goToStep(nextFlow.steps.indexOf(unanswered));
+          goToStep(
+            nextFlow.steps.indexOf(unanswered),
+            nextFlow.steps.length,
+          );
         } else {
           console.log("[Quiz] Q1: todas respondidas, chamando submitQuiz");
           submitQuiz(nextAnswers);
@@ -232,7 +238,7 @@ export default function Quiz() {
         unanswered: unanswered?.questionId,
       });
       if (unanswered) {
-        goToStep(nextFlow.steps.indexOf(unanswered));
+        goToStep(nextFlow.steps.indexOf(unanswered), nextFlow.steps.length);
       } else {
         console.log("[Quiz] todas respondidas, chamando submitQuiz");
         submitQuiz(nextAnswers);
@@ -240,14 +246,6 @@ export default function Quiz() {
     },
     [answers, currentQuestion, family, goToStep, submitQuiz],
   );
-
-  // Fallback: envio manual caso o fluxo automático não dispare submitQuiz
-  const [showManualSubmit, setShowManualSubmit] = useState(false);
-
-  const handleManualSubmit = useCallback(() => {
-    console.log("[Quiz] Envio manual disparado com answers:", answers);
-    submitQuiz(answers);
-  }, [answers, submitQuiz]);
 
   const restartQuiz = useCallback(() => {
     setAnswers({});
@@ -263,30 +261,6 @@ export default function Quiz() {
     const answered = flow.steps.filter((s) => s.questionId in answers).length;
     return { current: displayIndex + 1, total: flow.steps.length, answered };
   }, [family, flow, displayIndex, answers]);
-
-  // Quando todas as 8 respostas obrigatórias estão preenchidas e ainda não há
-  // resultado, dispara o submitQuiz automaticamente. Isso garante que o usuário
-  // sempre receba a indicação da máquina mesmo se o fluxo de perguntas não
-  // cobrir Q9/Q10 ou se o currentQuestion sumir.
-  useEffect(() => {
-    const required = [
-      "goal",
-      "context",
-      "frequency",
-      "surface",
-      "workload",
-      "power",
-      "priority",
-      "budget",
-    ];
-    const allRequiredAnswered = required.every(
-      (key) => answers[key] !== undefined && answers[key] !== "",
-    );
-    if (allRequiredAnswered && !result && stage === "questions" && !submitting) {
-      console.log("[Quiz] Todas as respostas obrigatórias preenchidas, disparando submitQuiz automático");
-      submitQuiz(answers);
-    }
-  }, [answers, family, result, stage, submitting]);
 
   if (stage === "result") {
     return (
@@ -360,21 +334,6 @@ export default function Quiz() {
               />
             </div>
 
-            {/* Botão de envio manual como fallback caso o fluxo automático não dispare */}
-            {showManualSubmit && !submitting && stage === "questions" && (
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <button
-                  onClick={handleManualSubmit}
-                  disabled={submitting}
-                  className="w-full rounded-lg border border-brand-ink bg-brand-yellow px-6 py-3 text-base font-[800] uppercase tracking-tight text-brand-ink transition-colors hover:bg-[#e6de00] disabled:pointer-events-none disabled:opacity-50 sm:w-auto"
-                >
-                  Descobrir minha máquina
-                </button>
-                <p className="text-xs text-text-muted">
-                  Todas as respostas preenchidas. Clique para obter a indicação da máquina.
-                </p>
-              </div>
-            )}
           </div>
 
           <aside className="hidden lg:sticky lg:top-6 lg:block">
