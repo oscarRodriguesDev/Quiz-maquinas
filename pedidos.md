@@ -9,4 +9,4 @@
 | 5 | Corrigir Q4/Q5 sem opções (injeção por família) | 033cea2 |
 | 6 | Melhorar apresentação dos resultados: texto expansível e foto ampliada | pendente |
 | 7 | Adicionar link de volta para a loja no header e abrir links da loja na mesma aba | d229c4d |
-| 8 | Condicionar perguntas/opções às respostas anteriores e impedir recomendação de outra família | daf936b |
+| 8 | Condicionar perguntas/opções às respostas anteriores e impedir recomendação de outra família | 0d4d965 |
