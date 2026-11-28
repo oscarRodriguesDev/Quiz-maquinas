@@ -85,19 +85,7 @@ export default function Header() {
               className="flex items-center justify-center gap-2 rounded-lg border border-brand-ink bg-brand-yellow px-5 py-2.5 text-brand-ink font-[800] text-sm uppercase tracking-tight transition-colors hover:bg-brand-yellow-dark focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-ink focus-visible:ring-opacity-25"
             >
               Descobrir minha máquina
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="m 5 5 14 14" />
-              </svg>
+      
             </Link>
           </div>
 
